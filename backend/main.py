@@ -162,8 +162,16 @@ async def query_endpoint(body: QueryRequest) -> QueryResponse:
 
     await store_event(category, audit_event)
 
-    # Only detect patterns, NO AUTO-APPLY!
+    # Detect patterns and AUTO-APPLY fix!
     routing_suggestion = await check_escalation_pattern()
+    
+    # AUTO-APPLY: If valid, non-sensitive suggestion exists, apply it!
+    if routing_suggestion and routing_suggestion.get("category") != "sensitive_data":
+        logger.info("Autonomous fix detected — applying routing suggestion for category: %s", routing_suggestion.get("category"))
+        success, message, change = obsidian.apply_routing_fix(routing_suggestion)
+        if success and change:
+            await hindsight_store.store_policy_change_event(change)
+            logger.info("Autonomous fix applied successfully: %s", message)
 
     logger.info(
         "Query done | category=%s action=%s blocked=%s cost_total=%.5f budget_remaining=%s",

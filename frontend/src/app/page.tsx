@@ -480,6 +480,9 @@ export default function Home() {
                         ? insights.routing_suggestion.suggestion
                         : JSON.stringify(insights.routing_suggestion, null, 2)}
                     </p>
+                    <p className="text-violet-400 text-xs font-mono-data mt-2">
+                      ✅ Fix will be applied automatically on next query!
+                    </p>
                     <button
                       onClick={handleApplyFix}
                       disabled={applyingFix || isSensitiveSuggestion}
