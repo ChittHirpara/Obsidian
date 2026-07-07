@@ -1,4 +1,3 @@
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export interface BudgetState {
@@ -9,11 +8,16 @@ export interface BudgetState {
 export interface AuditEvent {
   timestamp_ms: number;
   category: string;
-  model: string;
+  model: string | null;
   cost_total: number;
   latency_used_ms: number;
-  action: "allow" | "stop" | "policy_change";
-  budget_state?: BudgetState;
+  action: "allow" | "stop" | "deny_tool" | "switch_model" | string;
+  budget_state: BudgetState;
+  decision_mode?: string;
+  run_id?: string;
+  step?: number;
+  reason?: string;
+  query?: string;
   [key: string]: any;
 }
 
@@ -29,50 +33,61 @@ export interface EventsResponse {
 }
 
 export interface Insights {
-  recall: any;
-  reflect: any;
+  recall: string | null;
+  reflect: string | null;
   routing_suggestion: any;
 }
 
-export async function getEvents(): Promise<EventsResponse> {
-  const res = await fetch(`${API_URL}/events`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch events");
+export interface QueryResponse {
+  response: string;
+  category: string;
+  blocked: boolean;
+  audit_event: AuditEvent;
+  summary: Record<string, any>;
+  routing_suggestion: any;
+}
+
+export interface SessionResetResponse {
+  message: string;
+  previous_summary: Record<string, any>;
+}
+
+export interface HealthResponse {
+  status: string;
+}
+
+// ── API helpers ────────────────────────────────────────────────────────────
+
+async function apiFetch<T>(
+  path: string,
+  options?: RequestInit
+): Promise<T> {
+  const url = `${API_URL}${path}`;
+  const res = await fetch(url, { cache: "no-store", ...options });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`API ${path} failed (${res.status}): ${body}`);
+  }
+  // 204 No Content
+  if (res.status === 204) return undefined as T;
   return res.json();
 }
 
-export async function getInsights(): Promise<Insights> {
-  const res = await fetch(`${API_URL}/insights`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch insights");
-  return res.json();
-}
+export const getEvents = (): Promise<EventsResponse> =>
+  apiFetch<EventsResponse>("/events");
 
-export async function getRoutingPolicy(): Promise<{ policy: Record<string, string> }> {
-  const res = await fetch(`${API_URL}/routing-policy`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch routing policy");
-  return res.json();
-}
+export const getInsights = (): Promise<Insights> =>
+  apiFetch<Insights>("/insights");
 
-export async function postQuery(query: string): Promise<any> {
-  const res = await fetch(`${API_URL}/query`, {
+export const getHealth = (): Promise<HealthResponse> =>
+  apiFetch<HealthResponse>("/health");
+
+export const postQuery = (query: string): Promise<QueryResponse> =>
+  apiFetch<QueryResponse>("/query", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
   });
-  if (!res.ok) throw new Error("Failed to post query");
-  return res.json();
-}
 
-export async function deleteSession(): Promise<void> {
-  const res = await fetch(`${API_URL}/session`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to reset session");
-}
-
-// Updated: only applySuggestion remains (uses /apply-suggestion endpoint)
-export async function applySuggestion(): Promise<any> {
-  const res = await fetch(`${API_URL}/apply-suggestion`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) throw new Error("Failed to apply latest suggestion");
-  return res.json();
-}
+export const deleteSession = (): Promise<SessionResetResponse> =>
+  apiFetch<SessionResetResponse>("/session", { method: "DELETE" });
