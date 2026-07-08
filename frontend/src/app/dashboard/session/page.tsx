@@ -1,0 +1,169 @@
+"use client";
+
+import { useState, useEffect, useMemo, useRef } from "react";
+import { getEvents, deleteSession, type EventRecord } from "@/lib/api";
+import { showToast } from "@/components/Toast";
+import { motion, AnimatePresence } from "framer-motion";
+
+const formatTime = (ts: number) =>
+  new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+export default function SessionPage() {
+  const [events, setEvents] = useState<EventRecord[]>([]);
+  const [resetting, setResetting] = useState(false);
+  
+  const [uptime, setUptime] = useState("00:00:00");
+  const sessionStart = useRef(Date.now());
+  const [previousSessionSummary, setPreviousSessionSummary] = useState<any>(null);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      const e = Date.now() - sessionStart.current;
+      const h = Math.floor(e / 3600000), m = Math.floor((e % 3600000) / 60000), s = Math.floor((e % 60000) / 1000);
+      setUptime(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`);
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const res = await getEvents();
+      setEvents(res.events);
+    } catch {}
+  };
+
+  useEffect(() => {
+    fetchData();
+    const t = setInterval(fetchData, 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  const handleReset = async () => {
+    if (!confirm("Are you sure you want to reset the session and budget? This cannot be undone.")) return;
+    
+    setResetting(true);
+    try {
+      const res = await deleteSession();
+      sessionStart.current = Date.now();
+      setUptime("00:00:00");
+      setPreviousSessionSummary(res?.previous_summary);
+      showToast(res?.message ?? "Session reset successfully!", "success");
+      await fetchData();
+    } catch (e: any) {
+      showToast(e?.message ?? "Failed to reset session", "error");
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const latest = events.length > 0 ? events[events.length - 1]?.audit_event : null;
+  const budget = useMemo(() => {
+    if (!latest?.budget_state) return { remaining: 0.02, max: 0.02, pct: 100 };
+    const { remaining, max } = latest.budget_state;
+    return { remaining, max, pct: Math.max(0, (remaining / max) * 100) };
+  }, [latest]);
+
+  const isWarning = latest && (latest.action === "stop" || (latest.budget_state?.remaining ?? 1) <= 0);
+  const budgetBarColor = isWarning ? "#DC2626" : budget.pct < 40 ? "#D97706" : "#0D9488";
+
+  const totalSpend = events.reduce((sum, e) => sum + (e.audit_event.cost_total ?? 0), 0);
+  const totalQueries = events.length;
+  const blockedQueries = events.filter(e => e.audit_event.action === "stop").length;
+
+  return (
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px" }}>
+      
+      {/* Current Session Overview */}
+      <div className="card" style={{ padding: "24px", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: 0, right: 0, width: "150px", height: "150px", background: "radial-gradient(circle at top right, rgba(13, 148, 136, 0.1), transparent)", pointerEvents: "none" }} />
+         
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <h2 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 700, color: "#111827" }}>Current Session</h2>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span className="status-dot online" />
+              <span style={{ fontSize: "13px", color: "#6B7280" }}>Active for {uptime}</span>
+            </div>
+          </div>
+          
+          <button
+            onClick={handleReset}
+            disabled={resetting}
+            className="btn btn-danger"
+            style={{ padding: "8px 16px" }}
+          >
+            {resetting ? (
+              <span className="animate-spin" style={{ display: "inline-block", width: 14, height: 14 }}>↻</span>
+            ) : (
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+            Reset Session & Budget
+          </button>
+        </div>
+
+        {/* Big Budget Gauge */}
+        <div style={{ background: "#F7F9F8", borderRadius: "12px", padding: "24px", border: "1px solid #E3E8E6" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "12px" }}>
+            <div>
+              <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                <span className="font-mono-data" style={{ fontSize: "36px", fontWeight: 700, color: budgetBarColor, lineHeight: 1 }}>
+                  ${budget.remaining.toFixed(5)}
+                </span>
+                <span className="font-mono-data" style={{ fontSize: "16px", color: "#6B7280" }}>/ ${budget.max.toFixed(2)}</span>
+              </div>
+            </div>
+             <span style={{ fontSize: "12px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 12px", borderRadius: "999px" }}>
+              {isWarning ? "EXHAUSTED" : budget.pct > 60 ? "HEALTHY" : "LOW"}
+            </span>
+          </div>
+
+          <div className="progress-track" style={{ height: "12px", background: "#E3E8E6" }}>
+            <motion.div className="progress-fill"
+              initial={{ width: "100%" }}
+              animate={{ width: `${budget.pct}%` }}
+              transition={{ type: "spring", stiffness: 60, damping: 20 }}
+              style={{ background: budgetBarColor }}
+            />
+          </div>
+        </div>
+
+        {/* Session Stats Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginTop: "24px" }}>
+          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Total Spend</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#111827" }}>${totalSpend.toFixed(5)}</p>
+          </div>
+          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Total Queries</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#111827" }}>{totalQueries}</p>
+          </div>
+          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Blocked</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: blockedQueries > 0 ? "#DC2626" : "#111827" }}>{blockedQueries}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Previous Session Info (if any) */}
+      <AnimatePresence>
+        {previousSessionSummary && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="card" 
+            style={{ padding: "20px", background: "#F0FDFA", borderColor: "#CCFBF1" }}
+          >
+            <h3 style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: 600, color: "#0F766E" }}>Previous Session Summary</h3>
+            <div className="code-block" style={{ background: "#134E4A", color: "#CCFBF1", border: "none" }}>
+              {JSON.stringify(previousSessionSummary, null, 2)}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+}
