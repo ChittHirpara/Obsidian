@@ -1,31 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import DashboardNavbar from "@/components/DashboardNavbar";
+import { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import TopNavbar from "@/components/TopNavbar";
 import { ToastContainer } from "@/components/Toast";
 import { DashboardProvider } from "@/components/DashboardContext";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [selectedAgent, setSelectedAgent] = useState("");
+
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "transparent" }}>
-      {/* Main content area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden", position: "relative" }}>
-        
-        {/* Page content */}
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "var(--color-bg)" }}>
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main content */}
+      <div
+        style={{
+          flex: 1,
+          marginLeft: "var(--sidebar-width)",
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 0,
+          overflow: "hidden",
+        }}
+      >
+        <TopNavbar selectedAgent={selectedAgent} onAgentChange={setSelectedAgent} />
+
         <main
           style={{
             flex: 1,
             overflowY: "auto",
             overflowX: "hidden",
-            padding: "0 24px 24px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            padding: "24px 32px 32px",
           }}
         >
-          <DashboardNavbar />
-
-          <div style={{ width: "100%", maxWidth: "1152px" }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <DashboardProvider>
               {children}
             </DashboardProvider>
@@ -33,7 +43,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
       </div>
 
-      {/* Global toast */}
       <ToastContainer />
     </div>
   );

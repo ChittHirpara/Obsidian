@@ -45,7 +45,10 @@ from hindsight_store import (
     get_insights,
     store_event,
     store_policy_change_event,
+    purge_all_events,
+    clear_hindsight_memory,
 )
+from settings_store import get_settings, save_settings, ObsidianSettings
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -499,3 +502,41 @@ async def remediations_endpoint() -> dict:
 @app.get("/health", include_in_schema=False)
 async def health() -> dict[str, str]:
     return {"status": "ok", "version": "0.5.0"}
+
+
+# ── Settings & Danger Zone ────────────────────────────────────────────────────
+
+@app.get("/settings", response_model=ObsidianSettings, summary="Get global settings")
+async def get_settings_endpoint() -> ObsidianSettings:
+    return get_settings()
+
+
+@app.post("/settings", response_model=ObsidianSettings, summary="Save global settings")
+async def save_settings_endpoint(settings: ObsidianSettings) -> ObsidianSettings:
+    save_settings(settings)
+    return settings
+
+
+@app.post("/settings/danger/purge-logs", summary="Danger: Purge all audit logs")
+async def purge_logs_endpoint() -> dict:
+    purge_all_events()
+    return {"success": True, "message": "All audit logs have been purged."}
+
+
+@app.post("/settings/danger/clear-memory", summary="Danger: Clear Hindsight memory banks")
+async def clear_memory_endpoint() -> dict:
+    await clear_hindsight_memory()
+    return {"success": True, "message": "Hindsight memory banks cleared."}
+
+
+@app.post("/settings/danger/reset-budgets", summary="Danger: Reset all active agent budgets")
+async def reset_all_budgets_endpoint() -> dict:
+    from hindsight_store import get_agent_ids
+    agent_ids = get_agent_ids()
+    count = 0
+    for aid in agent_ids:
+        reset_session(aid)
+        count += 1
+    # also reset default
+    reset_session("default")
+    return {"success": True, "message": f"Reset budgets for {count} agents + default."}

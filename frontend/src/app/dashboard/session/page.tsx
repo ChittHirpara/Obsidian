@@ -1,25 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import { deleteSession, type EventRecord } from "@/lib/api";
+import { deleteSession } from "@/lib/api";
 import { formatINR } from "@/lib/currency";
 import { useDashboardData } from "@/components/DashboardContext";
 import { showToast } from "@/components/Toast";
 import { motion, AnimatePresence } from "framer-motion";
-
-const formatTime = (ts: number) =>
-  new Date(ts).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZone: "Asia/Kolkata",
-  });
+import { Activity, RotateCcw } from "lucide-react";
 
 export default function SessionPage() {
   const { events, refreshData: fetchData } = useDashboardData();
   const [resetting, setResetting] = useState(false);
-  
   const [uptime, setUptime] = useState("00:00:00");
   const sessionStart = useRef(Date.now());
   const [previousSessionSummary, setPreviousSessionSummary] = useState<any>(null);
@@ -35,7 +26,6 @@ export default function SessionPage() {
 
   const handleReset = async () => {
     if (!confirm("Are you sure you want to reset the session and budget? This cannot be undone.")) return;
-    
     setResetting(true);
     try {
       const res = await deleteSession();
@@ -59,106 +49,73 @@ export default function SessionPage() {
   }, [latest]);
 
   const isWarning = latest && (latest.action === "stop" || (latest.budget_state?.remaining ?? 1) <= 0);
-  const budgetBarColor = isWarning ? "#DC2626" : budget.pct < 40 ? "#D97706" : "#0D9488";
-
+  const budgetBarColor = isWarning ? "#F87171" : budget.pct < 40 ? "#FBBF24" : "#34D399";
   const totalSpend = events.reduce((sum, e) => sum + (e.audit_event.cost_total ?? 0), 0);
   const totalQueries = events.length;
   const blockedQueries = events.filter(e => e.audit_event.action === "stop").length;
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px", margin: "0 auto" }}>
-      
-      {/* Current Session Overview */}
       <div className="card" style={{ padding: "24px", position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: 0, right: 0, width: "150px", height: "150px", background: "radial-gradient(circle at top right, rgba(13, 148, 136, 0.1), transparent)", pointerEvents: "none" }} />
-         
+        <div style={{ position: "absolute", top: 0, right: 0, width: "150px", height: "150px", background: "radial-gradient(circle at top right, rgba(99,102,241,0.06), transparent)", pointerEvents: "none" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
           <div>
-            <h2 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 700, color: "#F3F4F6" }}>Current Session</h2>
+            <h2 style={{ margin: "0 0 4px", fontSize: "17px", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+              <Activity size={18} style={{ color: "var(--color-accent-light)" }} /> Current Session
+            </h2>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span className="status-dot online" />
-              <span style={{ fontSize: "13px", color: "#9CA3AF" }}>Active for {uptime}</span>
+              <span style={{ fontSize: "12.5px", color: "var(--color-text-muted)" }}>Active for <span className="font-mono-data">{uptime}</span></span>
             </div>
           </div>
-          
-          <button
-            onClick={handleReset}
-            disabled={resetting}
-            className="btn btn-danger"
-            style={{ padding: "8px 16px" }}
-          >
-            {resetting ? (
-              <span className="animate-spin" style={{ display: "inline-block", width: 14, height: 14 }}>↻</span>
-            ) : (
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            )}
-            Reset Session & Budget
+          <button onClick={handleReset} disabled={resetting} className="btn btn-danger" style={{ padding: "7px 16px" }}>
+            {resetting ? <span className="animate-spin" style={{ display: "inline-block", width: 13, height: 13 }}>↻</span> : <RotateCcw size={14} />}
+            Reset Session
           </button>
         </div>
 
-        {/* Big Budget Gauge */}
-        <div style={{ background: "rgba(17,24,39,0.4)", borderRadius: "12px", padding: "24px", border: "1px solid rgba(255,255,255,0.12)" }}>
+        {/* Budget Gauge */}
+        <div style={{ background: "var(--color-surface-elevated)", borderRadius: "12px", padding: "24px", border: "1px solid var(--color-border-subtle)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "12px" }}>
             <div>
-              <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
+              <p style={{ margin: "0 0 4px", fontSize: "10.5px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
               <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-                <span className="font-mono-data" style={{ fontSize: "36px", fontWeight: 700, color: budgetBarColor, lineHeight: 1 }}>
-                  {formatINR(budget.remaining, 5)}
-                </span>
-                <span className="font-mono-data" style={{ fontSize: "16px", color: "#9CA3AF" }}>/ {formatINR(budget.max)}</span>
+                <span className="font-mono-data" style={{ fontSize: "32px", fontWeight: 700, color: budgetBarColor, lineHeight: 1 }}>{formatINR(budget.remaining, 5)}</span>
+                <span className="font-mono-data" style={{ fontSize: "14px", color: "var(--color-text-muted)" }}>/ {formatINR(budget.max)}</span>
               </div>
             </div>
-             <span style={{ fontSize: "12px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 12px", borderRadius: "999px" }}>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 12px", borderRadius: "999px" }}>
               {isWarning ? "EXHAUSTED" : budget.pct > 60 ? "HEALTHY" : "LOW"}
             </span>
           </div>
-
-          <div className="progress-track" style={{ height: "12px", background: "rgba(255,255,255,0.12)" }}>
-            <motion.div className="progress-fill"
-              initial={{ width: "100%" }}
-              animate={{ width: `${budget.pct}%` }}
-              transition={{ type: "spring", stiffness: 60, damping: 20 }}
-              style={{ background: budgetBarColor }}
-            />
+          <div className="progress-track" style={{ height: "10px", background: "rgba(255,255,255,0.06)" }}>
+            <motion.div className="progress-fill" initial={{ width: "100%" }} animate={{ width: `${budget.pct}%` }} transition={{ type: "spring", stiffness: 60, damping: 20 }} style={{ background: budgetBarColor }} />
           </div>
         </div>
 
-        {/* Session Stats Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginTop: "24px" }}>
-          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Spend</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>{formatINR(totalSpend, 5)}</p>
-          </div>
-          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Queries</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>{totalQueries}</p>
-          </div>
-          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Blocked</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: blockedQueries > 0 ? "#DC2626" : "#F3F4F6" }}>{blockedQueries}</p>
-          </div>
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px", marginTop: "20px" }}>
+          {[
+            { label: "Total Spend", value: formatINR(totalSpend, 5), color: "var(--color-accent-light)" },
+            { label: "Total Queries", value: String(totalQueries), color: "var(--color-text-primary)" },
+            { label: "Blocked", value: String(blockedQueries), color: blockedQueries > 0 ? "var(--color-danger)" : "var(--color-text-muted)" },
+          ].map(s => (
+            <div key={s.label} style={{ padding: "14px", background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: "10px" }}>
+              <p style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--color-text-muted)" }}>{s.label}</p>
+              <p className="font-mono-data" style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: s.color }}>{s.value}</p>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Previous Session Info (if any) */}
       <AnimatePresence>
         {previousSessionSummary && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="card" 
-            style={{ padding: "20px", background: "rgba(20,184,166,0.1)", borderColor: "rgba(20,184,166,0.3)" }}
-          >
-            <h3 style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: 600, color: "#5EEAD4" }}>Previous Session Summary</h3>
-            <div className="code-block" style={{ background: "#134E4A", color: "#CCFBF1", border: "none" }}>
-              {JSON.stringify(previousSessionSummary, null, 2)}
-            </div>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="card" style={{ padding: "20px", background: "var(--color-accent-dim)", borderColor: "rgba(99,102,241,0.2)" }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: "13.5px", fontWeight: 600, color: "var(--color-accent-light)" }}>Previous Session Summary</h3>
+            <div className="code-block">{JSON.stringify(previousSessionSummary, null, 2)}</div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

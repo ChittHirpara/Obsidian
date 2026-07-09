@@ -38,6 +38,9 @@ from cascadeflow.harness.api import HarnessRunContext, _current_run, run as _cf_
 from cascadeflow.schema.exceptions import BudgetExceededError, HarnessStopError
 from openai import OpenAI
 from typing import Literal, TypedDict
+import re
+
+from settings_store import get_settings
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,12 +54,11 @@ _groq_client = OpenAI(
 # ── cascadeflow: enforce mode ─────────────────────────────────────────────────
 cascadeflow.init(mode="enforce")
 
-# Model definitions (valid Groq model names)
+# Model definitions (valid Groq model names) - Defaults
 DEFAULT_MODEL = "llama-3.3-70b-versatile"
 CHEAP_FALLBACK_MODEL = "llama-3.1-8b-instant"
 CATEGORIES = Literal["order_status", "refund", "sensitive_data", "general_faq"]
-# Increased budget to ₹1.00 for testing/demo purposes!
-DEMO_BUDGET = float(os.getenv("DEMO_BUDGET", "1.00"))
+DEMO_BUDGET = 1.00
 
 # ── Persistent HarnessRunContexts per agent ────────────────────────────────────
 _session_lock = threading.Lock()
@@ -94,7 +96,9 @@ class RoutingPolicyChange(TypedDict):
 
 def _make_ctx() -> HarnessRunContext:
     """Create a fresh HarnessRunContext via cascadeflow.run().__enter__()."""
-    cm = _cf_run(budget=DEMO_BUDGET, max_tool_calls=10)
+    settings = get_settings()
+    budget = float(settings.budgetCap)
+    cm = _cf_run(budget=budget, max_tool_calls=10)
     ctx = cm.__enter__()
     return ctx, cm
 
@@ -157,20 +161,23 @@ def apply_routing_fix(suggestion: dict) -> tuple[bool, str, RoutingPolicyChange 
         if category == "sensitive_data":
             return False, "Governance guardrail: sensitive_data queries may not be automatically downgraded", None
         
+        settings = get_settings()
+        cheap_model = settings.fallbackModel or CHEAP_FALLBACK_MODEL
+        
         old_model = _routing_policy[category]
         # Check if it's already using the cheap model
-        if old_model == CHEAP_FALLBACK_MODEL:
+        if old_model == cheap_model:
             return False, "No change needed: already using cheaper model", None
         
         # Apply the fix — mutates the live routing policy immediately
         import time as _time
-        _routing_policy[category] = CHEAP_FALLBACK_MODEL
+        _routing_policy[category] = cheap_model
         applied_at_ms = _time.time() * 1000
         reason_str = f"Cost escalation detected: {suggestion.get('escalation_rate', 'unknown')} escalation rate"
         change = RoutingPolicyChange(
             category=category,
             old_model=old_model,
-            new_model=CHEAP_FALLBACK_MODEL,
+            new_model=cheap_model,
             reason=reason_str,
         )
         # Record in remediation log so GET /insights can surface it
@@ -179,7 +186,7 @@ def apply_routing_fix(suggestion: dict) -> tuple[bool, str, RoutingPolicyChange 
             "applied_at_iso":   _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime(applied_at_ms / 1000)),
             "category":         category,
             "old_model":        old_model,
-            "new_model":        CHEAP_FALLBACK_MODEL,
+            "new_model":        cheap_model,
             "reason":           reason_str,
             "escalation_rate":  suggestion.get("escalation_rate"),
         })
@@ -235,25 +242,52 @@ def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], d
     for this specific agent.
     """
     ctx = _ensure_session(agent_id)
+    settings = get_settings()
 
     # Re-register the persistent context in the current async task's ContextVar
     _current_run.set(ctx)
 
-    # Classify query and get model from routing policy
-    category = classify_category(query)
-    with _routing_lock:
-        model = _routing_policy[category]
-
     try:
+        # Pre-flight compliance checks
+        if settings.piiDetection:
+            if re.search(r'\b\d{3}-\d{2}-\d{4}\b', query) or "ssn" in query.lower() or "credit card" in query.lower():
+                raise HarnessStopError("PII detected in query. Blocked by compliance guardrail.")
+                
+        if settings.jailbreakBlock:
+            q_lower = query.lower()
+            if "ignore all previous instructions" in q_lower or "system prompt" in q_lower or "bypass" in q_lower:
+                raise HarnessStopError("Prompt injection / jailbreak attempt detected. Blocked.")
+                
+        # Classify query
+        category = classify_category(query)
+        
+        if settings.strictSensitive and category == "sensitive_data":
+            raise HarnessStopError("Strict sensitive data blocking enabled. Blocked by policy.")
+            
+        with _routing_lock:
+            if settings.routingStrategy == "single-model":
+                model = settings.defaultModel
+            else:
+                model = _routing_policy[category]
+                # Fallback to settings defaults if they changed
+                if model == DEFAULT_MODEL:
+                    model = settings.defaultModel
+                elif model == CHEAP_FALLBACK_MODEL:
+                    model = settings.fallbackModel
+
         # Create the handle_query function with the correct model and run it
         handle_query = _create_handle_query(model)
         answer = handle_query(query)
     except BudgetExceededError as exc:
-        answer = (
-            f"[BUDGET STOP] ₹{abs(getattr(exc, 'remaining', 0)):.4f} over the "
-            f"₹{DEMO_BUDGET:.4f} cap. Query blocked by Obsidian. "
-            f"Use DELETE /session to reset for a new demo run."
-        )
+        if settings.blockOnBudget:
+            answer = (
+                f"[BUDGET STOP] ₹{abs(getattr(exc, 'remaining', 0)):.4f} over the "
+                f"₹{settings.budgetCap:.4f} cap. Query blocked by Obsidian. "
+                f"Use DELETE /session to reset for a new demo run."
+            )
+        else:
+            # Bypass budget stop
+            answer = handle_query(query) if 'handle_query' in locals() else "[ERROR] Budget Exceeded & bypass failed."
     except HarnessStopError as exc:
         answer = f"[POLICY STOP] {getattr(exc, 'reason', str(exc))}"
     except Exception as exc:
