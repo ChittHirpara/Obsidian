@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
 import { deleteSession, type EventRecord } from "@/lib/api";
+import { formatINR } from "@/lib/currency";
 import { useDashboardData } from "@/components/DashboardContext";
 import { showToast } from "@/components/Toast";
 import Link from "next/link";
@@ -25,7 +26,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const formatTime = (ts: number) =>
-  new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  new Date(ts).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Kolkata",
+  });
 const formatLatency = (ms: number) =>
   ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms.toFixed(0)}ms`;
 
@@ -153,13 +160,13 @@ export default function DashboardPage() {
 
       {/* Stat cards — responsive grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "14px" }}>
-        <StatCard label="Budget Remaining" value={`$${budget.remaining.toFixed(4)}`}
-          sub={`of $${budget.max.toFixed(2)} cap`}
+        <StatCard label="Budget Remaining" value={formatINR(budget.remaining, 4)}
+          sub={`of ${formatINR(budget.max)} cap`}
           color={isWarning ? "#DC2626" : budget.pct < 40 ? "#D97706" : "#0D9488"}
           trend={isWarning ? "⚠ Budget exceeded!" : undefined}
           icon={<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
         />
-        <StatCard label="Total Spend" value={`$${totalCost.toFixed(5)}`}
+        <StatCard label="Total Spend" value={formatINR(totalCost, 5)}
           sub={`across ${events.length} queries`} color="#6366F1"
           icon={<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
         />
@@ -181,7 +188,7 @@ export default function DashboardPage() {
             <p style={{ margin: "3px 0 0", fontSize: "13px", color: "#F3F4F6" }}>
               <span className="font-mono-data" style={{ fontWeight: 700, color: budgetBarColor }}>{(100 - budget.pct).toFixed(1)}%</span>
               {" used · "}
-              {isWarning ? "Budget exhausted — reset session to continue" : `$${budget.remaining.toFixed(5)} remaining`}
+              {isWarning ? "Budget exhausted — reset session to continue" : `${formatINR(budget.remaining, 5)} remaining`}
             </p>
           </div>
           <span style={{ fontSize: "11.5px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 10px", borderRadius: "999px" }}>
@@ -197,8 +204,8 @@ export default function DashboardPage() {
           />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: "5px" }}>
-          <span className="font-mono-data" style={{ fontSize: "10.5px", color: "#9CA3AF" }}>$0.00</span>
-          <span className="font-mono-data" style={{ fontSize: "10.5px", color: "#9CA3AF" }}>${budget.max.toFixed(2)}</span>
+          <span className="font-mono-data" style={{ fontSize: "10.5px", color: "#9CA3AF" }}>{formatINR(0)}</span>
+          <span className="font-mono-data" style={{ fontSize: "10.5px", color: "#9CA3AF" }}>{formatINR(budget.max)}</span>
         </div>
       </div>
 
@@ -231,7 +238,7 @@ export default function DashboardPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                 <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
-                <YAxis stroke="#9CA3AF" tick={{ fontSize: 9 }} tickFormatter={v => `$${v.toFixed(3)}`} axisLine={false} tickLine={false} />
+                <YAxis stroke="#9CA3AF" tick={{ fontSize: 9 }} tickFormatter={v => formatINR(Number(v), 3)} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ background: "#1F2937", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", borderRadius: "8px", fontSize: "11px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }} />
                 <Area type="monotone" dataKey="cost" name="Per-query" stroke="#0D9488" strokeWidth={3} fill="url(#gTeal)" dot={false} isAnimationActive={true} animationDuration={1200} animationEasing="ease-out" />
                 <Area type="monotone" dataKey="cumulative" name="Cumulative" stroke="#6366F1" strokeWidth={3} fill="url(#gIndigo)" style={{ filter: "url(#shadow)" }} dot={false} isAnimationActive={true} animationDuration={1200} animationEasing="ease-out" />
@@ -314,7 +321,7 @@ export default function DashboardPage() {
                       </span>
                     </td>
                     <td className="font-mono-data" style={{ fontSize: "11.5px", color: "#D1D5DB" }}>{r.audit_event.model ?? "—"}</td>
-                    <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600 }}>${r.audit_event.cost_total?.toFixed(5)}</td>
+                    <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600 }}>{formatINR(r.audit_event.cost_total ?? 0, 5)}</td>
                     <td className="font-mono-data right" style={{ color: "#9CA3AF", fontSize: "11.5px" }}>{formatLatency(r.audit_event.latency_used_ms ?? 0)}</td>
                     <td className="right"><ActionBadge action={r.audit_event.action} /></td>
                   </motion.tr>
