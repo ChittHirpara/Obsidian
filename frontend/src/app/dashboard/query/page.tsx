@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { postQuery, type QueryResponse } from "@/lib/api";
+import { formatINR } from "@/lib/currency";
 import { showToast } from "@/components/Toast";
 
 const EXAMPLE_QUERIES = [
@@ -160,7 +161,13 @@ export default function QueryPage() {
               <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.12)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                   <span style={{ fontSize: "11.5px", fontFamily: "monospace", color: "#9CA3AF" }}>
-                    {new Date(item.ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                    {new Date(item.ts).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                      timeZone: "Asia/Kolkata",
+                    })}
                   </span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "12px", fontWeight: 600, color: catColor }}>
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: catColor, display: "inline-block" }} />
@@ -175,7 +182,7 @@ export default function QueryPage() {
                 <div style={{ display: "flex", gap: "12px" }}>
                   {r.audit_event?.cost_total != null && (
                     <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#9CA3AF" }}>
-                      Cost: <strong style={{ color: "#F3F4F6" }}>${r.audit_event.cost_total.toFixed(5)}</strong>
+                      Cost: <strong style={{ color: "#F3F4F6" }}>{formatINR(r.audit_event.cost_total, 5)}</strong>
                     </span>
                   )}
                   {r.audit_event?.latency_used_ms != null && (
@@ -205,7 +212,7 @@ export default function QueryPage() {
                     { k: "Model", v: r.audit_event?.model ?? "—" },
                     { k: "Action", v: r.audit_event?.action ?? "—" },
                     { k: "Mode", v: r.audit_event?.decision_mode ?? "enforce" },
-                    { k: "Budget left", v: `$${r.audit_event?.budget_state?.remaining?.toFixed(5) ?? "—"}` },
+                    { k: "Budget left", v: formatINR(r.audit_event?.budget_state?.remaining ?? 0, 5) },
                   ].map(({ k, v }) => (
                     <div key={k} style={{ padding: "5px 10px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "6px" }}>
                       <span style={{ fontSize: "10.5px", color: "#9CA3AF", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{k}: </span>

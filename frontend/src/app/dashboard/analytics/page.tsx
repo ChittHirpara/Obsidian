@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { type EventRecord } from "@/lib/api";
+import { formatINR } from "@/lib/currency";
 import { useDashboardData } from "@/components/DashboardContext";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -94,10 +95,10 @@ export default function AnalyticsPage() {
                   </filter>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.1)" />
-                <XAxis type="number" tickFormatter={v => `$${v.toFixed(3)}`} stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                <XAxis type="number" tickFormatter={v => formatINR(Number(v), 3)} stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis dataKey="name" type="category" stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  formatter={(value: number) => [`$${value.toFixed(5)}`, "Cost"]}
+                  formatter={(value: number) => [formatINR(value, 5), "Cost"]}
                   contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
                   cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 />
@@ -205,9 +206,9 @@ export default function AnalyticsPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="index" stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} minTickGap={30} />
-                <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={v => `$${v.toFixed(2)}`} axisLine={false} tickLine={false} />
+                <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={v => formatINR(Number(v), 2)} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  formatter={(value: number) => [`$${value.toFixed(5)}`, "Cost"]}
+                  formatter={(value: number) => [formatINR(value, 5), "Cost"]}
                   labelFormatter={(v) => `Query #${v}`}
                   contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
                 />

@@ -20,7 +20,7 @@ for cat, evs in store.items():
         suggestions.append({
             'category': cat,
             'escalation_rate': round(rate, 2),
-            'suggestion': f"{int(rate * 100)}% of '{cat}' queries used a heavy model (cost > ${EXPENSIVE_COST_THRESHOLD:.4f}/call). Suggested fix: route routine '{cat}' queries to llama-3.1-8b-instant (free tier) and reserve qwen3-32b for complex cases only."
+            'suggestion': f"{int(rate * 100)}% of '{cat}' queries used a heavy model (cost > ₹{EXPENSIVE_COST_THRESHOLD:.4f}/call). Suggested fix: route routine '{cat}' queries to llama-3.1-8b-instant (free tier) and reserve qwen3-32b for complex cases only."
         })
 
 insights = {'recall': None, 'reflect': None, 'routing_suggestion': suggestions[0] if suggestions else None}

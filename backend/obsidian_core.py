@@ -55,7 +55,7 @@ cascadeflow.init(mode="enforce")
 DEFAULT_MODEL = "llama-3.3-70b-versatile"
 CHEAP_FALLBACK_MODEL = "llama-3.1-8b-instant"
 CATEGORIES = Literal["order_status", "refund", "sensitive_data", "general_faq"]
-# Increased budget to $1.00 for testing/demo purposes!
+# Increased budget to ₹1.00 for testing/demo purposes!
 DEMO_BUDGET = float(os.getenv("DEMO_BUDGET", "1.00"))
 
 # ── Persistent HarnessRunContext ──────────────────────────────────────────────
@@ -221,8 +221,8 @@ def run_query(query: str) -> tuple[str, list[dict], dict]:
         answer = handle_query(query)
     except BudgetExceededError as exc:
         answer = (
-            f"[BUDGET STOP] ${abs(getattr(exc, 'remaining', 0)):.4f} over the "
-            f"${DEMO_BUDGET:.4f} cap. Query blocked by Obsidian. "
+            f"[BUDGET STOP] ₹{abs(getattr(exc, 'remaining', 0)):.4f} over the "
+            f"₹{DEMO_BUDGET:.4f} cap. Query blocked by Obsidian. "
             f"Use DELETE /session to reset for a new demo run."
         )
     except HarnessStopError as exc:

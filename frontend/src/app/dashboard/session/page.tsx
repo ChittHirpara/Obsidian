@@ -2,12 +2,19 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { deleteSession, type EventRecord } from "@/lib/api";
+import { formatINR } from "@/lib/currency";
 import { useDashboardData } from "@/components/DashboardContext";
 import { showToast } from "@/components/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 const formatTime = (ts: number) =>
-  new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  new Date(ts).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Kolkata",
+  });
 
 export default function SessionPage() {
   const { events, refreshData: fetchData } = useDashboardData();
@@ -98,9 +105,9 @@ export default function SessionPage() {
               <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
               <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
                 <span className="font-mono-data" style={{ fontSize: "36px", fontWeight: 700, color: budgetBarColor, lineHeight: 1 }}>
-                  ${budget.remaining.toFixed(5)}
+                  {formatINR(budget.remaining, 5)}
                 </span>
-                <span className="font-mono-data" style={{ fontSize: "16px", color: "#9CA3AF" }}>/ ${budget.max.toFixed(2)}</span>
+                <span className="font-mono-data" style={{ fontSize: "16px", color: "#9CA3AF" }}>/ {formatINR(budget.max)}</span>
               </div>
             </div>
              <span style={{ fontSize: "12px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 12px", borderRadius: "999px" }}>
@@ -122,7 +129,7 @@ export default function SessionPage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginTop: "24px" }}>
           <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
             <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Spend</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>${totalSpend.toFixed(5)}</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>{formatINR(totalSpend, 5)}</p>
           </div>
           <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
             <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Queries</p>

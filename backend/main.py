@@ -169,10 +169,15 @@ async def query_endpoint(body: QueryRequest) -> QueryResponse:
     # AUTO-APPLY: If valid, non-sensitive suggestion exists, apply it!
     if routing_suggestion and routing_suggestion.get("category") != "sensitive_data":
         logger.info("Autonomous fix detected — applying routing suggestion for category: %s", routing_suggestion.get("category"))
-        success, message, change = obsidian.apply_routing_fix(routing_suggestion)
-        if success and change:
-            await hindsight_store.store_policy_change_event(change)
-            logger.info("Autonomous fix applied successfully: %s", message)
+        try:
+            success, message, change = apply_routing_fix(routing_suggestion)
+            if success and change:
+                await store_policy_change_event(change)
+                logger.info("Autonomous fix applied successfully: %s", message)
+            else:
+                logger.info("Autonomous fix skipped: %s", message)
+        except Exception:
+            logger.exception("Autonomous fix failed")
 
     logger.info(
         "Query done | category=%s action=%s blocked=%s cost_total=%.5f budget_remaining=%s",
@@ -217,7 +222,7 @@ async def reset_session_endpoint() -> SessionResetResponse:
     previous = reset_session()
     logger.info("Session reset. Previous cost: %.5f", previous.get("cost", 0))
     return SessionResetResponse(
-        message="Budget session AND routing policy reset. New $0.02 cap and default routing active.",
+        message="Budget session AND routing policy reset. New ₹0.02 cap and default routing active.",
         previous_summary=previous,
     )
 

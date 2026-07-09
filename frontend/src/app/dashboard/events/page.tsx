@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useDashboardData } from "@/components/DashboardContext";
+import { formatINR } from "@/lib/currency";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -18,7 +19,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const formatTime = (ts: number) =>
-  new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  new Date(ts).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Kolkata",
+  });
 
 const formatLatency = (ms: number) =>
   ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms.toFixed(0)}ms`;
@@ -153,7 +160,13 @@ export default function EventsPage() {
                       >
                         <td className="font-mono-data" style={{ color: "#9CA3AF", fontSize: "11.5px", whiteSpace: "nowrap" }}>
                           {new Date(r.timestamp_ms).toLocaleString("en-US", { 
-                            month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" 
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                            timeZone: "Asia/Kolkata",
                           })}
                         </td>
                         <td>
@@ -175,13 +188,13 @@ export default function EventsPage() {
                           )}
                         </td>
                         <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600 }}>
-                          {r.audit_event.cost_total != null ? `$${r.audit_event.cost_total.toFixed(5)}` : "—"}
+                          {r.audit_event.cost_total != null ? formatINR(r.audit_event.cost_total, 5) : "—"}
                         </td>
                         <td className="font-mono-data right" style={{ color: "#9CA3AF", fontSize: "12px" }}>
                           {r.audit_event.latency_used_ms != null ? formatLatency(r.audit_event.latency_used_ms) : "—"}
                         </td>
                         <td className="font-mono-data right" style={{ fontSize: "12px" }}>
-                          {r.audit_event.budget_state?.remaining != null ? `$${r.audit_event.budget_state.remaining.toFixed(4)}` : "—"}
+                          {r.audit_event.budget_state?.remaining != null ? formatINR(r.audit_event.budget_state.remaining, 4) : "—"}
                         </td>
                       </motion.tr>
                     );

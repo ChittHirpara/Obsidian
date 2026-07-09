@@ -1,0 +1,14 @@
+
+> obsidian-dashboard@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.20
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.121:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 6s (2600 modules)
+ GET /dashboard 200 in 6591ms
+ ✓ Compiled in 1208ms (1236 modules)
