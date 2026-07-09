@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { getEvents, type EventRecord } from "@/lib/api";
+import { useMemo } from "react";
+import { type EventRecord } from "@/lib/api";
+import { useDashboardData } from "@/components/DashboardContext";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend
@@ -21,19 +22,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function AnalyticsPage() {
-  const [events, setEvents] = useState<EventRecord[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getEvents();
-        setEvents(res.events);
-      } catch {}
-    };
-    fetchData();
-    const t = setInterval(fetchData, 4000);
-    return () => clearInterval(t);
-  }, []);
+  const { events } = useDashboardData();
 
   const costByCategory = useMemo(() => {
     const map: Record<string, number> = {};
@@ -89,24 +78,30 @@ export default function AnalyticsPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "24px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", maxWidth: "1200px" }}>
         
         {/* Cost by Category */}
         <div className="card" style={{ padding: "24px" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600 }}>Total Cost by Category</h3>
-          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#6B7280" }}>Cumulative spend per query type</p>
+          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600, color: "#F3F4F6" }}>Total Cost by Category</h3>
+          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#9CA3AF" }}>Cumulative spend per query type</p>
           
           <div style={{ height: "250px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={costByCategory} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E3E8E6" />
-                <XAxis type="number" tickFormatter={v => `$${v.toFixed(3)}`} stroke="#6B7280" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="#6B7280" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                <defs>
+                  <filter id="barShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#000" floodOpacity="0.3" />
+                  </filter>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.1)" />
+                <XAxis type="number" tickFormatter={v => `$${v.toFixed(3)}`} stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis dataKey="name" type="category" stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip 
                   formatter={(value: number) => [`$${value.toFixed(5)}`, "Cost"]}
-                  contentStyle={{ borderRadius: "8px", border: "1px solid #E3E8E6", fontSize: "12px" }}
+                  contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={16} isAnimationActive={true} animationDuration={1200} animationEasing="ease-out" style={{ filter: "url(#barShadow)" }}>
                   {costByCategory.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[entry.rawName] ?? "#6B7280"} />
                   ))}
@@ -117,51 +112,79 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Model Usage */}
-        <div className="card" style={{ padding: "24px" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600 }}>Model Distribution</h3>
-          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#6B7280" }}>Number of queries routed to each model</p>
+        <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column" }}>
+          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600, color: "#F3F4F6" }}>Model Distribution</h3>
+          <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#9CA3AF" }}>Number of queries routed to each model</p>
           
-          <div style={{ height: "250px" }}>
+          <div style={{ height: "180px", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={modelUsage}
                   cx="50%" cy="50%"
-                  innerRadius={60} outerRadius={90}
-                  paddingAngle={2}
+                  innerRadius={50} outerRadius={75}
+                  paddingAngle={3}
                   dataKey="value"
-                  stroke="none"
-                  label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                  labelLine={false}
+                  stroke="rgba(255,255,255,0.12)"
+                  strokeWidth={2}
+                  isAnimationActive={true}
+                  animationDuration={1000}
+                  animationBegin={200}
+                  style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }}
                 >
                   {modelUsage.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={MODEL_COLORS[index % MODEL_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ borderRadius: "8px", border: "1px solid #E3E8E6", fontSize: "12px" }}
+                  contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
                 />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
+            {modelUsage.map((entry, index) => {
+              const total = modelUsage.reduce((sum, d) => sum + d.value, 0);
+              const percent = total > 0 ? ((entry.value / total) * 100).toFixed(0) : "0";
+              return (
+                <div key={entry.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", background: "rgba(17,24,39,0.4)", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.12)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ width: 10, height: 10, borderRadius: "50%", background: MODEL_COLORS[index % MODEL_COLORS.length], display: "inline-block", flexShrink: 0 }} />
+                    <span style={{ fontSize: "12.5px", color: "#D1D5DB", fontWeight: 500 }}>{entry.name}</span>
+                  </div>
+                  <span className="font-mono-data" style={{ fontSize: "12.5px", color: "#F3F4F6", fontWeight: 700 }}>{percent}%</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Latency Histogram */}
         <div className="card" style={{ padding: "24px" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600 }}>Latency Distribution</h3>
-          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#6B7280" }}>Response times across all queries</p>
+          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600, color: "#F3F4F6" }}>Latency Distribution</h3>
+          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#9CA3AF" }}>Response times across all queries</p>
           
           <div style={{ height: "250px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={latencyHistogram} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E8E6" />
-                <XAxis dataKey="name" stroke="#6B7280" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis stroke="#6B7280" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                <defs>
+                  <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0D9488" stopOpacity={1}/>
+                    <stop offset="100%" stopColor="#0D9488" stopOpacity={0.6}/>
+                  </linearGradient>
+                  <filter id="latencyShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#0D9488" floodOpacity="0.4" />
+                  </filter>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="name" stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  cursor={{ fill: '#F7F9F8' }}
-                  contentStyle={{ borderRadius: "8px", border: "1px solid #E3E8E6", fontSize: "12px" }}
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                  contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
                 />
-                <Bar dataKey="count" fill="#0D9488" radius={[4, 4, 0, 0]} name="Queries" />
+                <Bar dataKey="count" fill="url(#latencyGradient)" radius={[4, 4, 0, 0]} barSize={20} name="Queries" isAnimationActive={true} animationDuration={1200} animationEasing="ease-out" style={{ filter: "url(#latencyShadow)" }} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -169,21 +192,26 @@ export default function AnalyticsPage() {
 
         {/* Cumulative Cost Trend */}
          <div className="card" style={{ padding: "24px" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600 }}>Cumulative Spend</h3>
-          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#6B7280" }}>Total cost growth over time (queries)</p>
+          <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 600, color: "#F3F4F6" }}>Cumulative Spend</h3>
+          <p style={{ margin: "0 0 20px", fontSize: "12px", color: "#9CA3AF" }}>Total cost growth over time (queries)</p>
           
           <div style={{ height: "250px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={costTrend} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E8E6" />
-                <XAxis dataKey="index" stroke="#6B7280" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} minTickGap={30} />
-                <YAxis stroke="#6B7280" tick={{ fontSize: 11 }} tickFormatter={v => `$${v.toFixed(2)}`} axisLine={false} tickLine={false} />
+                <defs>
+                  <filter id="lineShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#6366F1" floodOpacity="0.3" />
+                  </filter>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="index" stroke="#9CA3AF" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} minTickGap={30} />
+                <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={v => `$${v.toFixed(2)}`} axisLine={false} tickLine={false} />
                 <Tooltip 
                   formatter={(value: number) => [`$${value.toFixed(5)}`, "Cost"]}
                   labelFormatter={(v) => `Query #${v}`}
-                  contentStyle={{ borderRadius: "8px", border: "1px solid #E3E8E6", fontSize: "12px" }}
+                  contentStyle={{ background: "#1F2937", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.12)", color: "#F3F4F6", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)" }} itemStyle={{ color: "#F3F4F6" }}
                 />
-                <Line type="monotone" dataKey="cumulative" stroke="#6366F1" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }} name="Total Spend" />
+                <Line type="monotone" dataKey="cumulative" stroke="#6366F1" strokeWidth={3} style={{ filter: "url(#lineShadow)" }} dot={false} activeDot={{ r: 6, fill: "#6366F1", stroke: "#1F2937", strokeWidth: 2 }} name="Total Spend" isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
               </LineChart>
             </ResponsiveContainer>
           </div>

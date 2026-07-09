@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import { getEvents, deleteSession, type EventRecord } from "@/lib/api";
+import { deleteSession, type EventRecord } from "@/lib/api";
+import { useDashboardData } from "@/components/DashboardContext";
 import { showToast } from "@/components/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,7 +10,7 @@ const formatTime = (ts: number) =>
   new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
 export default function SessionPage() {
-  const [events, setEvents] = useState<EventRecord[]>([]);
+  const { events, refreshData: fetchData } = useDashboardData();
   const [resetting, setResetting] = useState(false);
   
   const [uptime, setUptime] = useState("00:00:00");
@@ -22,19 +23,6 @@ export default function SessionPage() {
       const h = Math.floor(e / 3600000), m = Math.floor((e % 3600000) / 60000), s = Math.floor((e % 60000) / 1000);
       setUptime(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`);
     }, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const res = await getEvents();
-      setEvents(res.events);
-    } catch {}
-  };
-
-  useEffect(() => {
-    fetchData();
-    const t = setInterval(fetchData, 4000);
     return () => clearInterval(t);
   }, []);
 
@@ -71,7 +59,7 @@ export default function SessionPage() {
   const blockedQueries = events.filter(e => e.audit_event.action === "stop").length;
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px", margin: "0 auto" }}>
       
       {/* Current Session Overview */}
       <div className="card" style={{ padding: "24px", position: "relative", overflow: "hidden" }}>
@@ -79,10 +67,10 @@ export default function SessionPage() {
          
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
           <div>
-            <h2 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 700, color: "#111827" }}>Current Session</h2>
+            <h2 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 700, color: "#F3F4F6" }}>Current Session</h2>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span className="status-dot online" />
-              <span style={{ fontSize: "13px", color: "#6B7280" }}>Active for {uptime}</span>
+              <span style={{ fontSize: "13px", color: "#9CA3AF" }}>Active for {uptime}</span>
             </div>
           </div>
           
@@ -104,15 +92,15 @@ export default function SessionPage() {
         </div>
 
         {/* Big Budget Gauge */}
-        <div style={{ background: "#F7F9F8", borderRadius: "12px", padding: "24px", border: "1px solid #E3E8E6" }}>
+        <div style={{ background: "rgba(17,24,39,0.4)", borderRadius: "12px", padding: "24px", border: "1px solid rgba(255,255,255,0.12)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "12px" }}>
             <div>
-              <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
+              <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>Budget Remaining</p>
               <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
                 <span className="font-mono-data" style={{ fontSize: "36px", fontWeight: 700, color: budgetBarColor, lineHeight: 1 }}>
                   ${budget.remaining.toFixed(5)}
                 </span>
-                <span className="font-mono-data" style={{ fontSize: "16px", color: "#6B7280" }}>/ ${budget.max.toFixed(2)}</span>
+                <span className="font-mono-data" style={{ fontSize: "16px", color: "#9CA3AF" }}>/ ${budget.max.toFixed(2)}</span>
               </div>
             </div>
              <span style={{ fontSize: "12px", fontWeight: 600, color: budgetBarColor, background: `${budgetBarColor}18`, padding: "4px 12px", borderRadius: "999px" }}>
@@ -120,7 +108,7 @@ export default function SessionPage() {
             </span>
           </div>
 
-          <div className="progress-track" style={{ height: "12px", background: "#E3E8E6" }}>
+          <div className="progress-track" style={{ height: "12px", background: "rgba(255,255,255,0.12)" }}>
             <motion.div className="progress-fill"
               initial={{ width: "100%" }}
               animate={{ width: `${budget.pct}%` }}
@@ -132,17 +120,17 @@ export default function SessionPage() {
 
         {/* Session Stats Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginTop: "24px" }}>
-          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Total Spend</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#111827" }}>${totalSpend.toFixed(5)}</p>
+          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Spend</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>${totalSpend.toFixed(5)}</p>
           </div>
-          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Total Queries</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#111827" }}>{totalQueries}</p>
+          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Total Queries</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: "#F3F4F6" }}>{totalQueries}</p>
           </div>
-          <div style={{ padding: "16px", background: "#FFFFFF", border: "1px solid #E3E8E6", borderRadius: "10px" }}>
-            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#6B7280" }}>Blocked</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: blockedQueries > 0 ? "#DC2626" : "#111827" }}>{blockedQueries}</p>
+          <div style={{ padding: "16px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px" }}>
+            <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#9CA3AF" }}>Blocked</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: blockedQueries > 0 ? "#DC2626" : "#F3F4F6" }}>{blockedQueries}</p>
           </div>
         </div>
       </div>
@@ -154,9 +142,9 @@ export default function SessionPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             className="card" 
-            style={{ padding: "20px", background: "#F0FDFA", borderColor: "#CCFBF1" }}
+            style={{ padding: "20px", background: "rgba(20,184,166,0.1)", borderColor: "rgba(20,184,166,0.3)" }}
           >
-            <h3 style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: 600, color: "#0F766E" }}>Previous Session Summary</h3>
+            <h3 style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: 600, color: "#5EEAD4" }}>Previous Session Summary</h3>
             <div className="code-block" style={{ background: "#134E4A", color: "#CCFBF1", border: "none" }}>
               {JSON.stringify(previousSessionSummary, null, 2)}
             </div>

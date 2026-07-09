@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { postQuery, getEvents, type EventRecord, type QueryResponse } from "@/lib/api";
+import { postQuery, type QueryResponse } from "@/lib/api";
 import { showToast } from "@/components/Toast";
 
 const EXAMPLE_QUERIES = [
@@ -40,17 +40,7 @@ export default function QueryPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [lastEvents, setLastEvents] = useState<EventRecord[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const fetchRecent = async () => {
-    try {
-      const ev = await getEvents();
-      setLastEvents([...ev.events].sort((a, b) => b.timestamp_ms - a.timestamp_ms).slice(0, 5));
-    } catch {}
-  };
-
-  useEffect(() => { fetchRecent(); }, []);
 
   const handleSubmit = async () => {
     const q = query.trim();
@@ -60,7 +50,6 @@ export default function QueryPage() {
       const result = await postQuery(q);
       setHistory(prev => [{ query: q, result, ts: Date.now() }, ...prev]);
       setQuery("");
-      await fetchRecent();
       if (result.blocked) {
         showToast("Query blocked by policy enforcement", "error");
       } else {
@@ -82,12 +71,12 @@ export default function QueryPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "900px" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "900px", margin: "0 auto" }}>
       {/* Query input card */}
       <div className="card" style={{ padding: "22px" }}>
         <div style={{ marginBottom: "16px" }}>
-          <h2 style={{ margin: 0, fontSize: "15px", fontWeight: 600, color: "#111827" }}>Submit a Query</h2>
-          <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6B7280" }}>
+          <h2 style={{ margin: 0, fontSize: "15px", fontWeight: 600, color: "#F3F4F6" }}>Submit a Query</h2>
+          <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#9CA3AF" }}>
             Routed through cascadeflow enforce mode → Groq (qwen3-32b). Press Enter or click Send.
           </p>
         </div>
@@ -110,7 +99,7 @@ export default function QueryPage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
           {/* Example chips */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-            <span style={{ fontSize: "11.5px", color: "#6B7280", fontWeight: 500, alignSelf: "center" }}>Try:</span>
+            <span style={{ fontSize: "11.5px", color: "#9CA3AF", fontWeight: 500, alignSelf: "center" }}>Try:</span>
             {EXAMPLE_QUERIES.slice(0, 4).map(ex => (
               <button key={ex} onClick={() => setQuery(ex)} className="chip" style={{ fontSize: "11.5px" }}>
                 {ex}
@@ -144,10 +133,10 @@ export default function QueryPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              style={{ marginTop: "16px", padding: "12px 14px", background: "#F0FDFA", border: "1px solid #99F6E4", borderRadius: "8px", display: "flex", alignItems: "center", gap: "10px" }}
+              style={{ marginTop: "16px", padding: "12px 14px", background: "rgba(20,184,166,0.15)", border: "1px solid rgba(20,184,166,0.3)", borderRadius: "8px", display: "flex", alignItems: "center", gap: "10px" }}
             >
               <div style={{ width: "16px", height: "16px", borderRadius: "50%", border: "2px solid #0D9488", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
-              <span style={{ fontSize: "13px", color: "#0D9488", fontWeight: 500 }}>Routing through cascadeflow → Groq…</span>
+              <span style={{ fontSize: "13px", color: "#14B8A6", fontWeight: 500 }}>Routing through cascadeflow → Groq…</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -157,7 +146,7 @@ export default function QueryPage() {
       <AnimatePresence initial={false}>
         {history.map((item, idx) => {
           const r = item.result;
-          const catColor = CATEGORY_COLORS[r.category] ?? "#6B7280";
+          const catColor = CATEGORY_COLORS[r.category] ?? "#9CA3AF";
           return (
             <motion.div
               key={item.ts}
@@ -168,9 +157,9 @@ export default function QueryPage() {
               style={{ overflow: "hidden" }}
             >
               {/* Header */}
-              <div style={{ padding: "14px 20px", borderBottom: "1px solid #E3E8E6", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+              <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.12)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "11.5px", fontFamily: "monospace", color: "#6B7280" }}>
+                  <span style={{ fontSize: "11.5px", fontFamily: "monospace", color: "#9CA3AF" }}>
                     {new Date(item.ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                   </span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "12px", fontWeight: 600, color: catColor }}>
@@ -185,32 +174,32 @@ export default function QueryPage() {
                 </div>
                 <div style={{ display: "flex", gap: "12px" }}>
                   {r.audit_event?.cost_total != null && (
-                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#6B7280" }}>
-                      Cost: <strong style={{ color: "#111827" }}>${r.audit_event.cost_total.toFixed(5)}</strong>
+                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#9CA3AF" }}>
+                      Cost: <strong style={{ color: "#F3F4F6" }}>${r.audit_event.cost_total.toFixed(5)}</strong>
                     </span>
                   )}
                   {r.audit_event?.latency_used_ms != null && (
-                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#6B7280" }}>
-                      Latency: <strong style={{ color: "#111827" }}>{formatLatency(r.audit_event.latency_used_ms)}</strong>
+                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#9CA3AF" }}>
+                      Latency: <strong style={{ color: "#F3F4F6" }}>{formatLatency(r.audit_event.latency_used_ms)}</strong>
                     </span>
                   )}
                 </div>
               </div>
 
               {/* Query */}
-              <div style={{ padding: "12px 20px 8px", background: "#F7F9F8" }}>
-                <p style={{ margin: 0, fontSize: "11px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Query</p>
-                <p style={{ margin: 0, fontSize: "13.5px", color: "#111827" }}>{item.query}</p>
+              <div style={{ padding: "12px 20px 8px", background: "rgba(17,24,39,0.4)" }}>
+                <p style={{ margin: 0, fontSize: "11px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Query</p>
+                <p style={{ margin: 0, fontSize: "13.5px", color: "#F3F4F6" }}>{item.query}</p>
               </div>
 
               {/* Response */}
               <div style={{ padding: "12px 20px 16px" }}>
-                <p style={{ margin: "0 0 6px", fontSize: "11px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
+                <p style={{ margin: "0 0 6px", fontSize: "11px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
                 <div className="code-block" style={{ fontSize: "12.5px" }}>{r.response}</div>
               </div>
 
               {/* Audit details */}
-              <div style={{ padding: "10px 20px 14px", borderTop: "1px solid #F3F4F6" }}>
+              <div style={{ padding: "10px 20px 14px", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {[
                     { k: "Model", v: r.audit_event?.model ?? "—" },
@@ -218,14 +207,14 @@ export default function QueryPage() {
                     { k: "Mode", v: r.audit_event?.decision_mode ?? "enforce" },
                     { k: "Budget left", v: `$${r.audit_event?.budget_state?.remaining?.toFixed(5) ?? "—"}` },
                   ].map(({ k, v }) => (
-                    <div key={k} style={{ padding: "5px 10px", background: "#F7F9F8", border: "1px solid #E3E8E6", borderRadius: "6px" }}>
-                      <span style={{ fontSize: "10.5px", color: "#6B7280", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{k}: </span>
-                      <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#111827" }}>{v}</span>
+                    <div key={k} style={{ padding: "5px 10px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "6px" }}>
+                      <span style={{ fontSize: "10.5px", color: "#9CA3AF", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{k}: </span>
+                      <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#F3F4F6" }}>{v}</span>
                     </div>
                   ))}
                   {r.routing_suggestion && (
-                    <div style={{ padding: "5px 10px", background: "#EEF2FF", border: "1px solid #C7D2FE", borderRadius: "6px" }}>
-                      <span style={{ fontSize: "11px", color: "#6366F1", fontWeight: 600 }}>💡 Routing suggestion available</span>
+                    <div style={{ padding: "5px 10px", background: "rgba(129,140,248,0.15)", border: "1px solid rgba(129,140,248,0.3)", borderRadius: "6px" }}>
+                      <span style={{ fontSize: "11px", color: "#818CF8", fontWeight: 600 }}>💡 Routing suggestion available</span>
                     </div>
                   )}
                 </div>
@@ -238,13 +227,13 @@ export default function QueryPage() {
       {history.length === 0 && (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-state-icon" style={{ background: "#F0FDFA" }}>
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#0D9488" strokeWidth={1.5}>
+            <div className="empty-state-icon" style={{ background: "rgba(20,184,166,0.15)" }}>
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#14B8A6" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
-            <p style={{ margin: 0, fontWeight: 600, color: "#111827", fontSize: "14px" }}>No queries yet</p>
-            <p style={{ margin: 0, fontSize: "13px", color: "#6B7280" }}>Type a query above and press Send or Enter</p>
+            <p style={{ margin: 0, fontWeight: 600, color: "#F3F4F6", fontSize: "14px" }}>No queries yet</p>
+            <p style={{ margin: 0, fontSize: "13px", color: "#9CA3AF" }}>Type a query above and press Send or Enter</p>
           </div>
         </div>
       )}

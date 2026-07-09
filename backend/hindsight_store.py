@@ -73,6 +73,12 @@ _total_event_count: int = 0
 # ── Policy change events (stored separately for now, or in _event_store with special category)
 POLICY_CHANGE_CATEGORY = "__policy_change__"
 
+# ── Agent event store (multi-agent simulation — purely additive) ──────────────
+# Structure: { agent_id → [{ timestamp_ms, category, agent_id, audit_event }, ...] }
+_agent_event_store: dict[str, list[dict]] = collections.defaultdict(list)
+_agent_store_lock = collections.defaultdict(lambda: __import__("threading").Lock())
+
+
 
 def _build_memory_text(category: str, audit_event: dict) -> str:
     """Build a rich, category-keyed text summary for Hindsight retain().
