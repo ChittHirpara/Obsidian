@@ -10,6 +10,8 @@ const NAV_ITEMS = [
   { id: "query", label: "Query", href: "/dashboard/query" },
   { id: "events", label: "Events", href: "/dashboard/events" },
   { id: "insights", label: "Insights", href: "/dashboard/insights" },
+  { id: "platform", label: "Platform", href: "/dashboard/platform" },
+  { id: "trust-score", label: "Trust Score", href: "/dashboard/trust-score" },
   { id: "session", label: "Session", href: "/dashboard/session" },
   { id: "health", label: "Health", href: "/dashboard/health" },
   { id: "settings", label: "Settings", href: "/dashboard/settings" },
@@ -68,11 +70,10 @@ export default function DashboardNavbar() {
               <Link
                 key={item.id}
                 href={item.href}
-                className={`px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200 whitespace-nowrap ${
-                  active
+                className={`px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200 whitespace-nowrap ${active
                     ? "bg-gray-800 text-white shadow-sm border border-gray-600"
                     : "text-gray-400 hover:bg-gray-800/50 hover:text-gray-200"
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
