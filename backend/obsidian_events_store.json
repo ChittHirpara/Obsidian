@@ -1,0 +1,1591 @@
+{
+  "total": 64,
+  "events": [
+    {
+      "timestamp_ms": 1783358302382.2996,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783358302382.2996,
+        "tool_calls_total": 0,
+        "cost_total": 0.0076625,
+        "latency_used_ms": 2875.0,
+        "energy_used": 1157.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.012337500000000001
+        },
+        "query": "Where is my order?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358306291.414,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783358306291.414,
+        "tool_calls_total": 0,
+        "cost_total": 0.0110975,
+        "latency_used_ms": 4280.999999959022,
+        "energy_used": 1684.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0089025
+        },
+        "query": "Can you give me the tracking for my shipment?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358317720.8433,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "5c081add3beb",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358317720.8433,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168425,
+        "latency_used_ms": 6733.999999938533,
+        "energy_used": 2554.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031575000000000006
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358373482.6077,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783358373482.6077,
+        "tool_calls_total": 0,
+        "cost_total": 0.0040125000000000004,
+        "latency_used_ms": 1156.0000000754371,
+        "energy_used": 610.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0159875
+        },
+        "query": "Where is my order?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358383755.5762,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783358383755.5762,
+        "tool_calls_total": 0,
+        "cost_total": 0.0064975,
+        "latency_used_ms": 1906.0000000754371,
+        "energy_used": 994.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0135025
+        },
+        "query": "Can you give me the tracking for my shipment?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358410854.4543,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783358410854.4543,
+        "tool_calls_total": 0,
+        "cost_total": 0.0097425,
+        "latency_used_ms": 3140.000000130385,
+        "energy_used": 1489.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.010257500000000001
+        },
+        "query": "Has my order shipped yet?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358422815.8179,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 4,
+        "timestamp_ms": 1783358422815.8179,
+        "tool_calls_total": 0,
+        "cost_total": 0.013765,
+        "latency_used_ms": 5968.000000109896,
+        "energy_used": 2103.5,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.006235000000000001
+        },
+        "query": "What is the delivery date for my package?",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "order_status",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "refund",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "sensitive_data",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783358432290.1553,
+      "category": "general_faq",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "qwen/qwen3-32b",
+        "run_id": "d82cf4162cef",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783358432290.1553,
+        "tool_calls_total": 0,
+        "cost_total": 0.0168175,
+        "latency_used_ms": 6905.00000002794,
+        "energy_used": 2572.0,
+        "budget_state": {
+          "max": 0.02,
+          "remaining": 0.0031825000000000013
+        },
+        "query": "order #12345 tracking status",
+        "applied": true,
+        "decision_mode": "enforce"
+      }
+    },
+    {
+      "timestamp_ms": 1783617529941.344,
+      "category": "order_status",
+      "agent_id": "support-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "3355f1273a2d",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783617529941.344,
+        "tool_calls_total": 0,
+        "cost_total": 0.0023875,
+        "latency_used_ms": 797.0000000204891,
+        "energy_used": 385.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9976125
+        },
+        "query": "Where is my order #12345?",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "support-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783617533666.791,
+      "category": "refund",
+      "agent_id": "support-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "3355f1273a2d",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783617533666.791,
+        "tool_calls_total": 0,
+        "cost_total": 0.0037025,
+        "latency_used_ms": 1250.0000001164153,
+        "energy_used": 608.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9962975
+        },
+        "query": "I want a refund for my purchase",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "support-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783617537222.5564,
+      "category": "general_faq",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "3355f1273a2d",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783617537222.5564,
+        "tool_calls_total": 0,
+        "cost_total": 0.00743,
+        "latency_used_ms": 2500.0000001164153,
+        "energy_used": 1194.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99257
+        },
+        "query": "How does your pricing compare to competitors?",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618444901.6526,
+      "category": "sensitive_data",
+      "agent_id": "test-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "65fa69c4f2e8",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783618444901.6526,
+        "tool_calls_total": 0,
+        "cost_total": 0.000445,
+        "latency_used_ms": 297.0000000204891,
+        "energy_used": 105.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.999555
+        },
+        "query": "My social security number is 123-45-6789 and credit card 4111-1111-1111-1111",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "test-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618448310.6426,
+      "category": "general_faq",
+      "agent_id": "test-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "65fa69c4f2e8",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783618448310.6426,
+        "tool_calls_total": 0,
+        "cost_total": 0.0006875,
+        "latency_used_ms": 454.00000002700835,
+        "energy_used": 167.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9993125
+        },
+        "query": "What are your business hours?",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "test-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618875509.763,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783618875509.763,
+        "tool_calls_total": 0,
+        "cost_total": 0.0016874999999999998,
+        "latency_used_ms": 797.0000000204891,
+        "energy_used": 280.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9983125
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618881577.3777,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783618881577.3777,
+        "tool_calls_total": 0,
+        "cost_total": 0.003515,
+        "latency_used_ms": 1500.0,
+        "energy_used": 581.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.996485
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618887615.0364,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783618887615.0364,
+        "tool_calls_total": 0,
+        "cost_total": 0.0051224999999999994,
+        "latency_used_ms": 2172.000000020489,
+        "energy_used": 849.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9948775
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618893926.4507,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 4,
+        "timestamp_ms": 1783618893926.4507,
+        "tool_calls_total": 0,
+        "cost_total": 0.00694,
+        "latency_used_ms": 3109.99999998603,
+        "energy_used": 1148.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99306
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618900294.4072,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783618900294.4072,
+        "tool_calls_total": 0,
+        "cost_total": 0.0101475,
+        "latency_used_ms": 4126.000000047497,
+        "energy_used": 1656.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9898525
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618906747.7256,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 6,
+        "timestamp_ms": 1783618906747.7256,
+        "tool_calls_total": 0,
+        "cost_total": 0.012375,
+        "latency_used_ms": 5220.000000088476,
+        "energy_used": 2017.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.987625
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618913270.77,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 7,
+        "timestamp_ms": 1783618913270.77,
+        "tool_calls_total": 0,
+        "cost_total": 0.0152125,
+        "latency_used_ms": 6407.000000122935,
+        "energy_used": 2470.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9847875
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618919756.286,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 8,
+        "timestamp_ms": 1783618919756.286,
+        "tool_calls_total": 0,
+        "cost_total": 0.0178,
+        "latency_used_ms": 7564.000000129454,
+        "energy_used": 2885.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9822
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618925772.4883,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 9,
+        "timestamp_ms": 1783618925772.4883,
+        "tool_calls_total": 0,
+        "cost_total": 0.0194775,
+        "latency_used_ms": 8251.000000163913,
+        "energy_used": 3163.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9805225
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618932115.9192,
+      "category": "order_status",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 10,
+        "timestamp_ms": 1783618932115.9192,
+        "tool_calls_total": 0,
+        "cost_total": 0.021664999999999997,
+        "latency_used_ms": 9235.00000021886,
+        "energy_used": 3518.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.978335
+        },
+        "query": "I want a refund for my last order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783618936698.4644,
+      "category": "__policy_change__",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "policy_change",
+        "model": null,
+        "cost_total": 0.0,
+        "latency_used_ms": 0.0,
+        "decision_mode": "governance",
+        "timestamp_ms": 1783618936698.4644,
+        "run_id": "policy_change",
+        "step": 0,
+        "reason": "Cost escalation detected: 0.7 escalation rate",
+        "query": null,
+        "old_model": "llama-3.3-70b-versatile",
+        "new_model": "llama-3.1-8b-instant",
+        "affected_category": "order_status"
+      }
+    },
+    {
+      "timestamp_ms": 1783618942345.1533,
+      "category": "refund",
+      "agent_id": "auto-fix-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "908deb15ddae",
+        "mode": "enforce",
+        "step": 11,
+        "timestamp_ms": 1783618942345.1533,
+        "tool_calls_total": 0,
+        "cost_total": 0.022714999999999996,
+        "latency_used_ms": 9798.000000184402,
+        "energy_used": 3701.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.977285
+        },
+        "query": "Give me my money back",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "auto-fix-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783619815557.4954,
+      "category": "refund",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "957bed960feb",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783619815557.4954,
+        "tool_calls_total": 0,
+        "cost_total": 0.0040625,
+        "latency_used_ms": 1265.999999945052,
+        "energy_used": 635.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9959375
+        },
+        "query": "My credit card was charged twice",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783620423235.9102,
+      "category": "order_status",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "957bed960feb",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783620423235.9102,
+        "tool_calls_total": 0,
+        "cost_total": 0.0066625,
+        "latency_used_ms": 2280.999999959022,
+        "energy_used": 1052.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9933375
+        },
+        "query": "I want a refund for order #98765",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783620737622.0525,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783620737622.0525,
+        "tool_calls_total": 0,
+        "cost_total": 0.0020975,
+        "latency_used_ms": 781.0000000754371,
+        "energy_used": 339.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9979025
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620740532.6304,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783620740532.6304,
+        "tool_calls_total": 0,
+        "cost_total": 0.003425,
+        "latency_used_ms": 1374.0000000689179,
+        "energy_used": 562.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.996575
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620743560.669,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783620743560.669,
+        "tool_calls_total": 0,
+        "cost_total": 0.0054824999999999995,
+        "latency_used_ms": 2062.000000034459,
+        "energy_used": 895.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9945175
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620746679.8271,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 4,
+        "timestamp_ms": 1783620746679.8271,
+        "tool_calls_total": 0,
+        "cost_total": 0.007859999999999999,
+        "latency_used_ms": 2875.0,
+        "energy_used": 1276.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99214
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620749759.5415,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783620749759.5415,
+        "tool_calls_total": 0,
+        "cost_total": 0.010107499999999998,
+        "latency_used_ms": 3640.999999945052,
+        "energy_used": 1638.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9898925
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620752710.9966,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 6,
+        "timestamp_ms": 1783620752710.9966,
+        "tool_calls_total": 0,
+        "cost_total": 0.011754999999999998,
+        "latency_used_ms": 4296.999999904074,
+        "energy_used": 1909.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.988245
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620755416.2903,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 7,
+        "timestamp_ms": 1783620755416.2903,
+        "tool_calls_total": 0,
+        "cost_total": 0.013012499999999998,
+        "latency_used_ms": 4687.999999965541,
+        "energy_used": 2122.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9869875
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620758561.1055,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 8,
+        "timestamp_ms": 1783620758561.1055,
+        "tool_calls_total": 0,
+        "cost_total": 0.015539999999999998,
+        "latency_used_ms": 5516.999999992549,
+        "energy_used": 2526.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.98446
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620761481.8289,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 9,
+        "timestamp_ms": 1783620761481.8289,
+        "tool_calls_total": 0,
+        "cost_total": 0.0176575,
+        "latency_used_ms": 6109.99999998603,
+        "energy_used": 2868.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9823425
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620764517.1296,
+      "category": "order_status",
+      "agent_id": "sales-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "4fc498c8282c",
+        "mode": "enforce",
+        "step": 10,
+        "timestamp_ms": 1783620764517.1296,
+        "tool_calls_total": 0,
+        "cost_total": 0.019655,
+        "latency_used_ms": 6859.99999998603,
+        "energy_used": 3192.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.980345
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "sales-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783620769145.6973,
+      "category": "__policy_change__",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "policy_change",
+        "model": null,
+        "cost_total": 0.0,
+        "latency_used_ms": 0.0,
+        "decision_mode": "governance",
+        "timestamp_ms": 1783620769145.6973,
+        "run_id": "policy_change",
+        "step": 0,
+        "reason": "Cost escalation detected: 0.7 escalation rate",
+        "query": null,
+        "old_model": "llama-3.3-70b-versatile",
+        "new_model": "llama-3.1-8b-instant",
+        "affected_category": "order_status"
+      }
+    },
+    {
+      "timestamp_ms": 1783620769467.684,
+      "category": "order_status",
+      "agent_id": "support-bot",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.1-8b-instant",
+        "run_id": "4f1414ce42d4",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783620769467.684,
+        "tool_calls_total": 0,
+        "cost_total": 0.0008075000000000001,
+        "latency_used_ms": 312.99999996554106,
+        "energy_used": 145.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9991925
+        },
+        "query": "Where is my order",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "support-bot"
+      }
+    }
+  ]
+}

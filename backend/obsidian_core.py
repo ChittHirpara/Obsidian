@@ -58,10 +58,10 @@ CATEGORIES = Literal["order_status", "refund", "sensitive_data", "general_faq"]
 # Increased budget to ₹1.00 for testing/demo purposes!
 DEMO_BUDGET = float(os.getenv("DEMO_BUDGET", "1.00"))
 
-# ── Persistent HarnessRunContext ──────────────────────────────────────────────
+# ── Persistent HarnessRunContexts per agent ────────────────────────────────────
 _session_lock = threading.Lock()
-_active_ctx: HarnessRunContext | None = None
-_session_cm: object | None = None   # the cascadeflow.run() context manager
+_active_ctxs: dict[str, HarnessRunContext] = {}
+_session_cms: dict[str, object] = {}
 
 # ── Routing Policy ────────────────────────────────────────────────────────────
 _routing_lock = threading.Lock()
@@ -73,6 +73,16 @@ _DEFAULT_POLICY: dict[CATEGORIES, str] = {
     "general_faq": DEFAULT_MODEL,
 }
 _routing_policy: dict[CATEGORIES, str] = _DEFAULT_POLICY.copy()
+
+# ── Remediation log — written by apply_routing_fix on every real policy change ──
+# Each entry: { applied_at_ms, category, old_model, new_model, reason, escalation_rate }
+_remediation_log: list[dict] = []
+
+
+def get_remediation_log() -> list[dict]:
+    """Return all recorded autonomous routing fixes, newest first."""
+    with _routing_lock:
+        return list(reversed(_remediation_log))
 
 
 class RoutingPolicyChange(TypedDict):
@@ -89,34 +99,40 @@ def _make_ctx() -> HarnessRunContext:
     return ctx, cm
 
 
-def _ensure_session() -> HarnessRunContext:
-    """Return (or lazily create) the persistent HarnessRunContext."""
-    global _active_ctx, _session_cm
+def _ensure_session(agent_id: str) -> HarnessRunContext:
+    """Return (or lazily create) the persistent HarnessRunContext for this agent."""
+    global _active_ctxs, _session_cms
     with _session_lock:
-        if _active_ctx is None:
-            _active_ctx, _session_cm = _make_ctx()
-    return _active_ctx
+        if agent_id not in _active_ctxs:
+            ctx, cm = _make_ctx()
+            _active_ctxs[agent_id] = ctx
+            _session_cms[agent_id] = cm
+    return _active_ctxs[agent_id]
 
 
-def reset_session() -> dict:
-    """Close the current session and start a fresh one. Returns the old summary. Also resets routing policy to defaults."""
-    global _active_ctx, _session_cm, _routing_policy
+def reset_session(agent_id: str = "default") -> dict:
+    """Close the current session and start a fresh one for the agent. Returns the old summary. Also resets routing policy to defaults."""
+    global _active_ctxs, _session_cms, _routing_policy, _remediation_log
     with _session_lock:
         old_summary: dict = {}
-        if _active_ctx is not None:
+        if agent_id in _active_ctxs:
             try:
-                old_summary = _active_ctx.summary()
+                old_summary = _active_ctxs[agent_id].summary()
             except Exception:
                 pass
-        if _session_cm is not None:
+        if agent_id in _session_cms:
             try:
-                _session_cm.__exit__(None, None, None)
+                _session_cms[agent_id].__exit__(None, None, None)
             except Exception:
                 pass
-        _active_ctx, _session_cm = _make_ctx()
-    # Also reset routing policy
+        
+        ctx, cm = _make_ctx()
+        _active_ctxs[agent_id] = ctx
+        _session_cms[agent_id] = cm
+    # Also reset routing policy and remediation log
     with _routing_lock:
         _routing_policy = _DEFAULT_POLICY.copy()
+        _remediation_log.clear()
     return old_summary
 
 
@@ -146,14 +162,27 @@ def apply_routing_fix(suggestion: dict) -> tuple[bool, str, RoutingPolicyChange 
         if old_model == CHEAP_FALLBACK_MODEL:
             return False, "No change needed: already using cheaper model", None
         
-        # Apply the fix
+        # Apply the fix — mutates the live routing policy immediately
+        import time as _time
         _routing_policy[category] = CHEAP_FALLBACK_MODEL
+        applied_at_ms = _time.time() * 1000
+        reason_str = f"Cost escalation detected: {suggestion.get('escalation_rate', 'unknown')} escalation rate"
         change = RoutingPolicyChange(
             category=category,
             old_model=old_model,
             new_model=CHEAP_FALLBACK_MODEL,
-            reason=f"Cost escalation detected: {suggestion.get('escalation_rate', 'unknown')} escalation rate"
+            reason=reason_str,
         )
+        # Record in remediation log so GET /insights can surface it
+        _remediation_log.append({
+            "applied_at_ms":    applied_at_ms,
+            "applied_at_iso":   _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime(applied_at_ms / 1000)),
+            "category":         category,
+            "old_model":        old_model,
+            "new_model":        CHEAP_FALLBACK_MODEL,
+            "reason":           reason_str,
+            "escalation_rate":  suggestion.get("escalation_rate"),
+        })
         return True, "Routing fix applied successfully", change
 
 
@@ -197,15 +226,15 @@ def _create_handle_query(model: str):
     return _inner_handle_query
 
 
-def run_query(query: str) -> tuple[str, list[dict], dict]:
+def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], dict]:
     """
     Run a query through the persistent cascadeflow enforce-mode session.
 
     Key: We call `_current_run.set(ctx)` at the start of every request so the
-    cascadeflow interceptor sees the same accumulated-cost HarnessRunContext
-    regardless of which async task is calling us.
+    cascadeflow interceptor sees the correct accumulated-cost HarnessRunContext
+    for this specific agent.
     """
-    ctx = _ensure_session()
+    ctx = _ensure_session(agent_id)
 
     # Re-register the persistent context in the current async task's ContextVar
     _current_run.set(ctx)
