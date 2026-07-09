@@ -82,7 +82,13 @@ export default function HealthPage() {
         <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid #E3E8E6", display: "flex", justifyContent: "space-between" }}>
           <span style={{ fontSize: "12px", color: "#6B7280" }}>API Endpoint: <span className="font-mono-data" style={{ color: "#111827" }}>{process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}</span></span>
           <span style={{ fontSize: "12px", color: "#6B7280" }}>
-            Last checked: {lastCheck ? lastCheck.toLocaleTimeString() : "—"}
+            Last checked: {lastCheck ? lastCheck.toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+              timeZone: "Asia/Kolkata",
+            }) : "—"}
           </span>
         </div>
       </div>

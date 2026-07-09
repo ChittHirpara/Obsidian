@@ -39,7 +39,7 @@ USE_HINDSIGHT: bool = os.getenv("USE_HINDSIGHT", "false").lower() == "true"
 HINDSIGHT_URL: str = os.getenv("HINDSIGHT_URL", "http://localhost:8888")
 HINDSIGHT_BANK_ID: str = "obsidian-audit"   # single bank for all audit events
 
-# Cost above which a call is considered "expensive" ($0.006/call proxy)
+# Cost above which a call is considered "expensive" (₹0.006/call proxy)
 EXPENSIVE_COST_THRESHOLD: float = float(os.getenv("EXPENSIVE_COST_THRESHOLD", "0.006"))
 
 # ── Hindsight client (lazy-loaded only when USE_HINDSIGHT=true) ───────────────
@@ -95,9 +95,9 @@ def _build_memory_text(category: str, audit_event: dict) -> str:
         f"Audit event for category '{category}': "
         f"query routed to model {model} in enforce mode. "
         f"Action={action}. "
-        f"Cost=${cost:.5f} per query. "
+        f"Cost=₹{cost:.5f} per query. "
         f"Latency={latency:.0f}ms. "
-        f"The '{category}' category cost ${cost:.5f} for this request."
+        f"The '{category}' category cost ₹{cost:.5f} for this request."
     )
 
 
@@ -205,7 +205,7 @@ async def check_escalation_pattern() -> Optional[dict]:
                 "escalation_rate": round(rate, 2),
                 "suggestion": (
                     f"{int(rate * 100)}% of '{category}' queries used a heavy model "
-                    f"(cost > ${EXPENSIVE_COST_THRESHOLD:.4f}/call). "
+                    f"(cost > ₹{EXPENSIVE_COST_THRESHOLD:.4f}/call). "
                     f"Suggested fix: route routine '{category}' queries to "
                     f"llama-3.1-8b-instant (free tier) and reserve qwen3-32b for "
                     f"complex cases only."
@@ -357,9 +357,9 @@ async def _ask_groq_with_context(query: str) -> str:
             f"  [{i}] category={rec.get('category', '?')}"
             f"  action={ae.get('action', '?')}"
             f"  model={ae.get('model', '?')}"
-            f"  cost=${ae.get('cost_total', 0):.5f}"
+            f"  cost=₹{ae.get('cost_total', 0):.5f}"
             f"  latency={ae.get('latency_used_ms', 0):.0f}ms"
-            f"  budget_remaining=${bs.get('remaining', '?')}"
+            f"  budget_remaining=₹{bs.get('remaining', '?')}"
         )
 
     # Per-category summary
@@ -379,7 +379,7 @@ async def _ask_groq_with_context(query: str) -> str:
         avg = s["total_cost"] / s["count"] if s["count"] else 0
         lines.append(
             f"  {cat}: {s['count']} queries, "
-            f"total=${s['total_cost']:.5f}, avg=${avg:.5f}/query, "
+            f"total=₹{s['total_cost']:.5f}, avg=₹{avg:.5f}/query, "
             f"blocked={s['blocked']}"
         )   
 
@@ -395,7 +395,7 @@ async def _ask_groq_with_context(query: str) -> str:
         "You have access to a structured audit log of all LLM queries that have passed through "
         "the Obsidian governance engine. Answer the user's question concisely and insightfully "
         "using only the data provided. Be specific — reference actual costs, categories, and counts. "
-        "If the question is hypothetical (e.g. 'what if budget was $0.01?'), reason carefully based on "
+        "If the question is hypothetical (e.g. 'what if budget was ₹0.01?'), reason carefully based on "
         "the data. Keep your answer under 150 words."
     )
 

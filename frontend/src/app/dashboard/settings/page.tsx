@@ -1,5 +1,7 @@
 "use client";
 
+import { formatINR } from "@/lib/currency";
+
 export default function SettingsPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px" }}>
@@ -19,7 +21,7 @@ export default function SettingsPage() {
 
           <div style={{ padding: "16px", background: "#F7F9F8", borderRadius: "8px", border: "1px solid #E3E8E6" }}>
             <p style={{ margin: "0 0 4px", fontSize: "12px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Session Budget Cap</p>
-            <p className="font-mono-data" style={{ margin: 0, fontSize: "14px", color: "#111827" }}>$0.02</p>
+            <p className="font-mono-data" style={{ margin: 0, fontSize: "14px", color: "#111827" }}>{formatINR(0.02, 2)}</p>
             <p style={{ margin: "4px 0 0", fontSize: "12px", color: "#6B7280" }}>Fixed policy limit enforced by cascadeflow core.</p>
           </div>
         </div>
