@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function LoginPage() {
         overflow: "hidden",
       }}
     >
+      <Navbar />
       {/* Decorative blobs */}
       <div
         style={{

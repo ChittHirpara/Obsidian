@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { getEvents, type EventRecord } from "@/lib/api";
+import { useState, useMemo } from "react";
+import { useDashboardData } from "@/components/DashboardContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -24,24 +24,9 @@ const formatLatency = (ms: number) =>
   ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms.toFixed(0)}ms`;
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<EventRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { events, isLoading: loading } = useDashboardData();
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
-
-  const fetchData = async () => {
-    try {
-      const res = await getEvents();
-      setEvents([...res.events].sort((a, b) => b.timestamp_ms - a.timestamp_ms));
-    } catch {}
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-    const t = setInterval(fetchData, 4000);
-    return () => clearInterval(t);
-  }, []);
 
   const filtered = useMemo(() => {
     let list = events;
@@ -93,7 +78,7 @@ export default function EventsPage() {
           
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", flex: 1, minWidth: "250px" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: "300px" }}>
-              <svg style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#6B7280" }} width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -124,7 +109,7 @@ export default function EventsPage() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="font-mono-data" style={{ fontSize: "12px", color: "#6B7280" }}>{filtered.length} results</span>
+            <span className="font-mono-data" style={{ fontSize: "12px", color: "#9CA3AF" }}>{filtered.length} results</span>
             <button onClick={downloadCSV} className="btn btn-ghost" disabled={filtered.length === 0} style={{ padding: "6px 14px", fontSize: "13px" }}>
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -158,7 +143,7 @@ export default function EventsPage() {
               <tbody>
                 <AnimatePresence initial={false}>
                   {filtered.map((r, i) => {
-                    const catColor = CATEGORY_COLORS[r.category] ?? "#6B7280";
+                    const catColor = CATEGORY_COLORS[r.category] ?? "#9CA3AF";
                     return (
                       <motion.tr
                         key={`${r.timestamp_ms}-${i}`}
@@ -166,7 +151,7 @@ export default function EventsPage() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.15 }}
                       >
-                        <td className="font-mono-data" style={{ color: "#6B7280", fontSize: "11.5px", whiteSpace: "nowrap" }}>
+                        <td className="font-mono-data" style={{ color: "#9CA3AF", fontSize: "11.5px", whiteSpace: "nowrap" }}>
                           {new Date(r.timestamp_ms).toLocaleString("en-US", { 
                             month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" 
                           })}
@@ -177,7 +162,7 @@ export default function EventsPage() {
                             {CATEGORY_LABELS[r.category] ?? r.category}
                           </span>
                         </td>
-                        <td className="font-mono-data" style={{ fontSize: "12px", color: "#374151" }}>
+                        <td className="font-mono-data" style={{ fontSize: "12px", color: "#D1D5DB" }}>
                           {r.audit_event.model ?? <span style={{ color: "#9CA3AF" }}>—</span>}
                         </td>
                         <td>
@@ -192,7 +177,7 @@ export default function EventsPage() {
                         <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600 }}>
                           {r.audit_event.cost_total != null ? `$${r.audit_event.cost_total.toFixed(5)}` : "—"}
                         </td>
-                        <td className="font-mono-data right" style={{ color: "#6B7280", fontSize: "12px" }}>
+                        <td className="font-mono-data right" style={{ color: "#9CA3AF", fontSize: "12px" }}>
                           {r.audit_event.latency_used_ms != null ? formatLatency(r.audit_event.latency_used_ms) : "—"}
                         </td>
                         <td className="font-mono-data right" style={{ fontSize: "12px" }}>
@@ -210,8 +195,8 @@ export default function EventsPage() {
                          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" strokeWidth={1.5} style={{ marginBottom: "8px" }}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
-                        <p style={{ margin: 0, fontWeight: 600, color: "#111827", fontSize: "14px" }}>No events found</p>
-                        <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6B7280" }}>Try adjusting your filters or search query.</p>
+                        <p style={{ margin: 0, fontWeight: 600, color: "#F3F4F6", fontSize: "14px" }}>No events found</p>
+                        <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#9CA3AF" }}>Try adjusting your filters or search query.</p>
                       </div>
                     </td>
                   </tr>
