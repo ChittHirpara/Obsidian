@@ -7,119 +7,132 @@
    - Network:      http://192.168.1.121:3000
 
  ✓ Starting...
- ✓ Ready in 2.1s
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 2.8s (1534 modules)
+ GET / 200 in 3299ms
+ ✓ Compiled in 579ms (704 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1146ms (1525 modules)
+ GET /login 404 in 1708ms
+ GET / 200 in 420ms
  ○ Compiling /dashboard ...
- ✓ Compiled /dashboard in 6s (2600 modules)
- GET /dashboard 200 in 6591ms
- ✓ Compiled in 1208ms (1236 modules)
- ○ Compiling /dashboard/events ...
- ✓ Compiled /dashboard/events in 1048ms (2593 modules)
- GET /dashboard/events 200 in 1572ms
+ ✓ Compiled /dashboard in 3.5s (2598 modules)
+ GET /dashboard 200 in 4055ms
+ GET /dashboard 200 in 103ms
+ GET /dashboard 200 in 92ms
+ GET /dashboard 200 in 73ms
+ GET /dashboard 200 in 188ms
+ GET /dashboard 200 in 77ms
  ○ Compiling /api/[...path] ...
- ✓ Compiled /api/[...path] in 799ms (2613 modules)
- GET /api/insights 200 in 1826ms
- GET /api/events 200 in 1841ms
- GET /dashboard 200 in 185ms
- GET /api/events 200 in 71ms
- GET /api/insights 200 in 83ms
- GET /api/events 200 in 79ms
- GET /api/insights 200 in 85ms
+ ✓ Compiled /api/[...path] in 1661ms (2618 modules)
+ GET /api/events 200 in 6634ms
+ GET /api/events 200 in 6648ms
+ GET /api/insights 200 in 8935ms
+ GET /api/insights 200 in 8954ms
  ○ Compiling /dashboard/analytics ...
- ✓ Compiled /dashboard/analytics in 1076ms (2628 modules)
- GET /dashboard/analytics 200 in 1439ms
- GET /dashboard/analytics 200 in 63ms
+ ✓ Compiled /dashboard/analytics in 1275ms (2633 modules)
+ GET /dashboard/analytics 200 in 1621ms
+ GET /api/events 200 in 101ms
+ GET /api/insights 200 in 2404ms
+ GET /api/events 200 in 100ms
+ GET /api/insights 200 in 2400ms
+ GET /dashboard 200 in 109ms
  ○ Compiling /dashboard/query ...
- ✓ Compiled /dashboard/query in 997ms (2635 modules)
- GET /dashboard/query 200 in 1194ms
- GET /dashboard/query 200 in 66ms
- GET /dashboard/events 200 in 87ms
- ○ Compiling /dashboard/insights ...
- ✓ Compiled /dashboard/insights in 980ms (2642 modules)
- GET /dashboard/insights 200 in 1140ms
- ○ Compiling /dashboard/session ...
- ✓ Compiled /dashboard/session in 2.2s (2649 modules)
- GET /api/insights 200 in 1885ms
- GET /api/events 200 in 1896ms
- GET /dashboard/session 200 in 2497ms
- ○ Compiling /dashboard/health ...
- ✓ Compiled /dashboard/health in 1021ms (2656 modules)
- GET /dashboard/health 200 in 1200ms
- GET /api/health 200 in 79ms
- GET /api/health 200 in 83ms
- ○ Compiling /dashboard/settings ...
- ✓ Compiled /dashboard/settings in 1020ms (2663 modules)
- GET /dashboard/settings 200 in 1182ms
- GET /api/events 200 in 93ms
- GET /api/insights 200 in 102ms
- GET /dashboard 200 in 85ms
- GET /api/events 200 in 127ms
- GET /api/insights 200 in 135ms
- GET /api/events 200 in 89ms
- GET /api/insights 200 in 93ms
- GET /dashboard/settings 200 in 72ms
- GET /api/events 200 in 80ms
- GET /api/insights 200 in 82ms
- GET /api/events 200 in 85ms
- GET /api/insights 200 in 88ms
- GET /dashboard 200 in 60ms
- GET /dashboard/analytics 200 in 68ms
- GET /dashboard/events 200 in 68ms
- GET /api/events 200 in 73ms
- GET /api/insights 200 in 98ms
- GET /dashboard/session 200 in 46ms
- GET /dashboard/settings 200 in 46ms
- GET /dashboard 200 in 24ms
- GET /api/events 200 in 58ms
- GET /api/insights 200 in 62ms
+ ✓ Compiled /dashboard/query in 1046ms (2635 modules)
+ GET /dashboard/query 200 in 1296ms
  GET /dashboard/query 200 in 64ms
- GET /api/events 200 in 56ms
- GET /api/insights 200 in 56ms
- POST /api/query 200 in 297ms
- GET /api/events 200 in 40ms
- GET /api/insights 200 in 44ms
- GET /api/events 200 in 50ms
- GET /api/insights 200 in 55ms
- GET /api/events 200 in 38ms
- GET /api/insights 200 in 42ms
- GET /api/events 200 in 45ms
- GET /api/insights 200 in 47ms
- GET /api/events 200 in 31ms
- GET /api/insights 200 in 43ms
- GET /api/events 200 in 44ms
- GET /api/insights 200 in 47ms
- GET /api/events 200 in 44ms
- GET /api/insights 200 in 48ms
- GET /dashboard 200 in 44ms
+ GET /api/events 200 in 109ms
+ GET /api/insights 200 in 2426ms
  GET /api/events 200 in 51ms
- GET /api/insights 200 in 53ms
- GET /api/events 200 in 52ms
- GET /api/insights 200 in 55ms
- GET /dashboard/insights 200 in 67ms
- GET /dashboard/insights 200 in 66ms
- GET /dashboard/session 200 in 54ms
- GET /dashboard/health 200 in 65ms
- GET /api/health 200 in 43ms
- GET /api/health 200 in 52ms
- GET /dashboard/settings 200 in 50ms
- GET /api/events 200 in 70ms
- GET /api/insights 200 in 76ms
- GET /api/events 200 in 51ms
- GET /api/insights 200 in 55ms
- GET /dashboard 200 in 51ms
- GET /api/events 200 in 59ms
- GET /api/insights 200 in 61ms
- GET /dashboard/settings 200 in 49ms
- GET /dashboard 200 in 39ms
- GET /dashboard/settings 200 in 57ms
- GET /api/events 200 in 49ms
- GET /api/insights 200 in 55ms
- GET /api/events 200 in 38ms
- GET /api/insights 200 in 50ms
- GET /api/events 200 in 41ms
- GET /api/insights 200 in 45ms
- GET /api/events 200 in 29ms
- GET /api/insights 200 in 34ms
+ POST /api/query 200 in 4119ms
+ GET /api/insights 200 in 2493ms
+ GET /dashboard/analytics 200 in 47ms
+ GET /dashboard/query 200 in 40ms
+ GET /api/events 200 in 37ms
+ GET /api/insights 200 in 2328ms
+ ○ Compiling /dashboard/events ...
+ ✓ Compiled /dashboard/events in 529ms (2642 modules)
+ GET /dashboard/events 200 in 693ms
+ GET /dashboard/query 200 in 47ms
  GET /api/events 200 in 47ms
- GET /api/insights 200 in 51ms
+ GET /api/insights 200 in 2366ms
+ POST /api/query 200 in 2691ms
+ GET /api/events 200 in 47ms
+ GET /api/insights 200 in 2331ms
+ GET /api/events 200 in 43ms
+ GET /api/insights 200 in 2329ms
+ GET /api/events 200 in 40ms
+ GET /api/insights 200 in 2342ms
+ GET /dashboard/events 200 in 47ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 1073ms (2649 modules)
+ GET /dashboard/insights 200 in 1266ms
+ GET /dashboard/insights 200 in 39ms
+ GET /api/events 200 in 49ms
+ GET /api/insights 200 in 2351ms
+ GET /api/events 200 in 36ms
+ GET /api/insights 200 in 2351ms
+ GET /api/events 200 in 32ms
+ GET /api/insights 200 in 2357ms
+ GET /api/events 200 in 41ms
+ GET /api/insights 200 in 2352ms
+ GET /api/events 200 in 27ms
+ GET /api/insights 200 in 2330ms
+ GET /api/events 200 in 29ms
+ GET /api/insights 200 in 2316ms
+ GET /api/events 200 in 24ms
+ GET /api/insights 200 in 2315ms
  GET /api/events 200 in 26ms
- GET /api/insights 200 in 28ms
+ GET /api/insights 200 in 2330ms
+ GET /api/insights 200 in 2337ms
+ GET /api/events 200 in 24ms
+ GET /api/insights 200 in 2344ms
+ GET /api/events 200 in 43ms
+ GET /api/insights 200 in 2356ms
+ GET /dashboard/insights 200 in 420ms
+ GET /api/events 200 in 47ms
+ GET /api/insights 200 in 2360ms
+ GET /api/events 200 in 25ms
+ GET /api/insights 200 in 2360ms
+ GET /api/events 200 in 79ms
+ GET /api/insights 200 in 2392ms
+ GET /api/events 200 in 76ms
+ GET /api/insights 200 in 2391ms
+ ○ Compiling /dashboard/session ...
+ ✓ Compiled /dashboard/session in 1665ms (2651 modules)
+ GET /dashboard/session 200 in 1853ms
+ GET /dashboard/query 200 in 84ms
+ GET /dashboard/analytics 200 in 97ms
+ GET /api/events 200 in 88ms
+ GET /dashboard/analytics 200 in 50ms
+ GET /api/insights 200 in 2394ms
+ GET /dashboard 200 in 90ms
+ GET /api/events 200 in 36ms
+ GET /api/insights 200 in 2351ms
+ GET /api/insights 200 in 3084ms
+ GET /api/events 200 in 29ms
+ GET /api/insights 200 in 2350ms
+ GET /api/events 200 in 29ms
+ GET /api/insights 200 in 2357ms
+ GET /api/events 200 in 29ms
+ GET /api/insights 200 in 2336ms
+ GET /api/events 200 in 28ms
+ GET /api/insights 200 in 2340ms
+ GET /api/insights 200 in 2333ms
+ GET /api/events 200 in 28ms
+ GET /api/insights 200 in 2341ms
+ GET /api/events 200 in 63ms
+ GET /api/insights 200 in 2396ms
+ GET /dashboard/analytics 200 in 77ms
+ GET /dashboard/insights 200 in 86ms
+ GET /api/events 200 in 70ms
+ GET /api/insights 200 in 2390ms
+ GET /api/events 200 in 65ms
+ GET /api/insights 200 in 2401ms
+ GET /api/events 200 in 24ms
+ GET /api/insights 200 in 2353ms
+ GET /api/events 200 in 23ms
+ GET /api/insights 200 in 2335ms
+ GET /api/events 200 in 22ms
+ GET /api/insights 200 in 2315ms

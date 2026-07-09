@@ -30,6 +30,8 @@ import json
 import logging
 import os
 import time
+import threading
+from pathlib import Path
 from typing import Optional
 
 logger = logging.getLogger("obsidian.hindsight")
@@ -69,6 +71,9 @@ def _get_hindsight():
 # Structure: { category → [{ timestamp_ms, category, audit_event }, ...] }
 _event_store: dict[str, list[dict]] = collections.defaultdict(list)
 _total_event_count: int = 0
+_store_lock = threading.Lock()
+_store_path = Path(__file__).resolve().with_name("obsidian_events_store.json")
+_seed_path = Path(__file__).resolve().parents[1] / "events.json"
 
 # ── Policy change events (stored separately for now, or in _event_store with special category)
 POLICY_CHANGE_CATEGORY = "__policy_change__"
@@ -77,6 +82,125 @@ POLICY_CHANGE_CATEGORY = "__policy_change__"
 # Structure: { agent_id → [{ timestamp_ms, category, agent_id, audit_event }, ...] }
 _agent_event_store: dict[str, list[dict]] = collections.defaultdict(list)
 _agent_store_lock = collections.defaultdict(lambda: __import__("threading").Lock())
+
+
+def _load_events_payload(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as exc:
+        logger.warning("Failed to load event store from %s: %s", path, exc)
+        return []
+    events = data.get("events") if isinstance(data, dict) else data
+    return events if isinstance(events, list) else []
+
+
+def _replace_event_store(events: list[dict]) -> None:
+    _event_store.clear()
+    global _total_event_count
+    _total_event_count = 0
+    for rec in events:
+        category = rec.get("category", "unknown")
+        _event_store[category].append(rec)
+        _total_event_count += 1
+
+
+def _load_initial_events() -> None:
+    events = _load_events_payload(_store_path)
+    if not events:
+        events = _load_events_payload(_seed_path)
+    if events:
+        _replace_event_store(events)
+
+
+def _persist_events() -> None:
+    with _store_lock:
+        events = get_all_events()
+        payload = {"total": len(events), "events": events}
+        try:
+            with _store_path.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2)
+        except Exception as exc:
+            logger.warning("Failed to persist event store to %s: %s", _store_path, exc)
+
+
+def _build_local_insights() -> tuple[Optional[str], Optional[str], Optional[dict]]:
+    """Generate deterministic fallback insights from the local audit log."""
+    all_events = get_all_events()
+    if not all_events:
+        return (
+            "No audit events have been recorded yet.",
+            "Run a few governed queries first; the insights view will summarize cost and routing patterns here.",
+            None,
+        )
+
+    cat_stats: dict[str, dict[str, float | int]] = collections.defaultdict(
+        lambda: {"count": 0, "total_cost": 0.0, "blocked": 0, "expensive": 0}
+    )
+    for rec in all_events:
+        category = rec.get("category", "unknown")
+        audit_event = rec.get("audit_event", {})
+        cost = float(audit_event.get("cost_total") or 0)
+
+        stats = cat_stats[category]
+        stats["count"] += 1
+        stats["total_cost"] += cost
+        stats["blocked"] += 1 if audit_event.get("action") in ("stop", "deny_tool") else 0
+        stats["expensive"] += 1 if cost > EXPENSIVE_COST_THRESHOLD else 0
+
+    ordered = sorted(
+        cat_stats.items(),
+        key=lambda item: (float(item[1]["total_cost"]), int(item[1]["count"])),
+        reverse=True,
+    )
+    top_category, top_stats = ordered[0]
+    top_count = int(top_stats["count"])
+    top_cost = float(top_stats["total_cost"])
+    avg_cost = top_cost / top_count if top_count else 0.0
+    expensive_count = int(top_stats["expensive"])
+    blocked_count = int(top_stats["blocked"])
+    expensive_rate = (expensive_count / top_count) if top_count else 0.0
+
+    recall_lines = [
+        "Local audit summary:",
+        f"- Total events: {len(all_events)}",
+    ]
+    for category, stats in ordered[:5]:
+        count = int(stats["count"])
+        total_cost = float(stats["total_cost"])
+        avg = total_cost / count if count else 0.0
+        recall_lines.append(
+            f"- {category}: {count} events, total ₹{total_cost:.5f}, avg ₹{avg:.5f}, blocked {int(stats['blocked'])}"
+        )
+
+    reflect_lines = [
+        f"{top_category} is currently the highest-spend category in the local log.",
+        f"It has {top_count} events, total spend ₹{top_cost:.5f}, and average cost ₹{avg_cost:.5f} per request.",
+    ]
+    if expensive_count > 0:
+        reflect_lines.append(
+            f"{expensive_count} of those calls crossed the heavy-model threshold (₹{EXPENSIVE_COST_THRESHOLD:.4f})."
+        )
+    if blocked_count > 0:
+        reflect_lines.append(f"{blocked_count} requests were stopped by policy.")
+
+    suggestion = None
+    if top_count >= 2 and expensive_rate > 0.5:
+        suggestion = {
+            "source": "local_heuristic",
+            "category": top_category,
+            "escalation_rate": round(expensive_rate, 2),
+            "suggestion": (
+                f"More than half of '{top_category}' requests used a heavy model "
+                f"(cost > ₹{EXPENSIVE_COST_THRESHOLD:.4f}/call). Consider routing routine "
+                f"'{top_category}' traffic to llama-3.1-8b-instant and reserving qwen3-32b for complex cases."
+            ),
+            "recall_context": "\n".join(recall_lines),
+        }
+
+    return "\n".join(recall_lines), "\n".join(reflect_lines), suggestion
 
 
 
@@ -101,6 +225,9 @@ def _build_memory_text(category: str, audit_event: dict) -> str:
     )
 
 
+_load_initial_events()
+
+
 # ── Public API ────────────────────────────────────────────────────────────────
 
 async def store_event(category: str, audit_event: dict) -> None:
@@ -120,6 +247,7 @@ async def store_event(category: str, audit_event: dict) -> None:
     # Always keep in-memory mirror for the dashboard
     _event_store[category].append(record)
     _total_event_count += 1
+    _persist_events()
 
     if USE_HINDSIGHT:
         try:
@@ -158,6 +286,7 @@ async def store_policy_change_event(change: dict) -> None:
     }
     _event_store[POLICY_CHANGE_CATEGORY].append(record)
     _total_event_count += 1
+    _persist_events()
 
 def get_all_events() -> list[dict]:
     """Return all stored events sorted ascending by timestamp_ms."""
@@ -224,10 +353,10 @@ async def get_insights() -> tuple[Optional[str], Optional[str], Optional[dict]]:
         reflect_text – LLM-reasoned routing rule suggestion
         suggestion   – structured dict for the API response
     """
+    local_recall, local_reflect, local_suggestion = _build_local_insights()
+
     if not USE_HINDSIGHT:
-        # Fall back to in-memory heuristic
-        suggestion = await check_escalation_pattern() if _total_event_count > 0 else None
-        return None, None, suggestion
+        return local_recall, local_reflect, local_suggestion
 
     try:
         client = _get_hindsight()
@@ -289,11 +418,15 @@ async def get_insights() -> tuple[Optional[str], Optional[str], Optional[dict]]:
                 "recall_context": recall_text,
             }
 
-        return recall_text, reflect_text, suggestion
+        return (
+            recall_text or local_recall,
+            reflect_text or local_reflect,
+            suggestion or local_suggestion,
+        )
 
     except Exception as exc:
         logger.warning("Hindsight get_insights failed: %s", exc)
-        return None, None, None
+        return local_recall, local_reflect, local_suggestion
 
 
 async def ask_hindsight(query: str) -> str:
