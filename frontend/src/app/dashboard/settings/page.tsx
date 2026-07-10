@@ -102,12 +102,13 @@ export default function SettingsPage() {
             <p style={{ marginTop: 8 }}>
               Configure Obsidian&apos;s agentic AI middleware — policies, routing, budgets & integrations.
             </p>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <SavedBadge show={saved} />
-          <button onClick={showSaved} className="btn btn-primary" style={{ padding: "8px 20px" }}>
-            <Save size={14} /> Save Changes
-          </button>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <SavedBadge show={saved} />
+            <button onClick={showSaved} className="btn btn-primary" style={{ padding: "8px 20px" }}>
+              <Save size={14} /> Save Changes
+            </button>
+          </div>
         </div>
       </div>
 

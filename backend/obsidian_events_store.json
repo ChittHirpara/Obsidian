@@ -1,5 +1,5 @@
 {
-  "total": 74,
+  "total": 75,
   "events": [
     {
       "timestamp_ms": 1783358302382.2996,
@@ -1826,6 +1826,32 @@
           "remaining": 0.9938275
         },
         "query": "hello what is your name",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783665384126.845,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "cccb7e0d446a",
+        "mode": "enforce",
+        "step": 4,
+        "timestamp_ms": 1783665384126.845,
+        "tool_calls_total": 0,
+        "cost_total": 0.009745,
+        "latency_used_ms": 8171.999999998661,
+        "energy_used": 1568.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.990255
+        },
+        "query": "what is the main advantages of using the groq",
         "applied": true,
         "decision_mode": "enforce",
         "agent_id": "default"
