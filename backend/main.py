@@ -22,7 +22,7 @@ import logging
 import time
 from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -30,10 +30,10 @@ from obsidian_core import (
     classify_category,
     reset_session,
     run_query,
-    get_routing_policy,
     apply_routing_fix,
     get_remediation_log,
     DEMO_BUDGET,
+    reset_all_budgets,
 )
 from slack_alerts import post_slack_alert
 from hindsight_store import (
@@ -57,6 +57,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger("obsidian")
 
+# Tracks which sessions have already received a low budget warning
+_budget_warnings_sent = set()
+
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Obsidian API",
@@ -76,7 +79,21 @@ app.add_middleware(
 )
 
 
+# ── Auth Dependency ───────────────────────────────────────────────────────────
+def verify_api_key(x_obsidian_api_key: str = Header(None)):
+    settings = get_settings()
+    if not settings.apiKey or x_obsidian_api_key != settings.apiKey:
+        raise HTTPException(status_code=401, detail="Invalid API Key")
+    return x_obsidian_api_key
+
 # ── Schemas ───────────────────────────────────────────────────────────────────
+class OpenAIChatRequest(BaseModel):
+    model: str
+    messages: list[dict]
+    max_tokens: Optional[int] = None
+    temperature: Optional[float] = None
+    stream: Optional[bool] = False
+
 class QueryRequest(BaseModel):
     query: str
     agent_id: str = "default"   # NEW: optional agent_id (defaults to "default" for compat)
@@ -195,52 +212,77 @@ async def query_endpoint(body: QueryRequest) -> QueryResponse:
     category = classify_category(body.query)
     logger.info("Category: %s", category)
 
-    answer, trace_events, summary = run_query(body.query, agent_id=agent_id)
+    answer, trace_events, summary, flags = run_query(body.query, agent_id=agent_id)
+    
+    if "pii_detected" in flags and get_settings().strictSensitive:
+        category = "sensitive_data"
 
-    audit_event: dict[str, Any] = trace_events[-1] if trace_events else {
-        "action":          "unknown",
-        "model":           None,
-        "cost_total":      0.0,
-        "latency_used_ms": 0.0,
-        "decision_mode":   "enforce",
-        "timestamp_ms":    time.time() * 1000,
-        "run_id":          "n/a",
-        "step":            0,
-        "reason":          "no_trace",
-        "query":           body.query,
-    }
+    if trace_events and not (answer.startswith("[POLICY STOP]") or answer.startswith("[BUDGET STOP]")):
+        audit_event: dict[str, Any] = trace_events[-1]
+    else:
+        action = "unknown"
+        reason = "no_trace"
+        if answer.startswith("[POLICY STOP]"):
+            action = "block"
+            reason = answer.replace("[POLICY STOP] ", "").strip()
+        elif answer.startswith("[BUDGET STOP]"):
+            action = "block"
+            reason = "budget_exceeded"
+            
+        audit_event = {
+            "action":          action,
+            "model":           None,
+            "cost_total":      0.0,
+            "latency_used_ms": 0.0,
+            "decision_mode":   "enforce",
+            "timestamp_ms":    time.time() * 1000,
+            "run_id":          "n/a",
+            "step":            0,
+            "reason":          reason,
+            "query":           body.query,
+        }
     audit_event["agent_id"] = agent_id   # stamp agent_id on the event
+    audit_event["flags"] = flags         # stamp flags on the event
 
-    blocked = audit_event.get("action") in ("stop", "deny_tool")
+    blocked = audit_event.get("action") in ("stop", "deny_tool", "block")
 
     # Store in both legacy store AND agent-isolated store
     await store_event(category, audit_event, agent_id=agent_id)
 
-    # ── Slack alerts ──────────────────────────────────────────────────────────
+    # ── Slack alerts & Low Budget Warning ──────────────────────────────────────
     cost        = float(audit_event.get("cost_total") or 0)
     action_str  = str(audit_event.get("action") or "unknown")
     budget_state = audit_event.get("budget_state") or {}
     remaining   = float(budget_state.get("remaining", DEMO_BUDGET))
     budget_cap  = float(budget_state.get("max", DEMO_BUDGET))
+    
+    settings = get_settings()
+    budget_warning = False
 
-    # Trigger 1: compliance / policy stop
+    # Check for compliance block
     if blocked:
-        post_slack_alert(
-            agent_id=agent_id,
-            reason="compliance STOP fired",
-            cost=cost,
-            action=action_str,
-        )
+        if settings.slackAlerts:
+            post_slack_alert(
+                settings.webhookUrl,
+                f"⚠️ *[{agent_id}]* compliance STOP fired — cost=${cost:.5f}, action=`{action_str}`"
+            )
 
-    # Trigger 2: budget_remaining < 10 % of cap
-    elif budget_cap > 0 and remaining < 0.10 * budget_cap:
-        pct_used = round((1 - remaining / budget_cap) * 100, 1)
-        post_slack_alert(
-            agent_id=agent_id,
-            reason=f"{pct_used}% of budget consumed (${remaining:.5f} left)",
-            cost=cost,
-            action=action_str,
-        )
+    # Check for low budget
+    elif budget_cap > 0:
+        percent_remaining = (remaining / budget_cap) * 100
+        run_id = audit_event.get("run_id")
+        
+        if percent_remaining <= settings.warningThreshold:
+            if run_id not in _budget_warnings_sent:
+                _budget_warnings_sent.add(run_id)
+                budget_warning = True
+                
+                if settings.slackAlerts:
+                    msg = f"⚠️ [{agent_id}] budget at {percent_remaining:.1f}% remaining (${remaining:.4f} left of ${budget_cap:.4f})"
+                    post_slack_alert(settings.webhookUrl, msg)
+                    
+    # Stamp budget_warning on response event
+    audit_event["budget_warning"] = budget_warning
     # ─────────────────────────────────────────────────────────────────────────
 
     # Escalation check (scoped to this agent's events)
@@ -324,9 +366,31 @@ async def reset_session_endpoint() -> SessionResetResponse:
     )
 
 
-@app.get("/routing-policy", response_model=RoutingPolicyResponse)
-async def routing_policy_endpoint() -> RoutingPolicyResponse:
-    return RoutingPolicyResponse(policy=get_routing_policy())
+@app.get("/settings/routing")
+async def get_routing_policy_endpoint() -> dict:
+    return get_settings().routingPolicy
+
+class UpdateCategoryRequest(BaseModel):
+    model: Optional[str] = None
+    action: Optional[str] = None
+    priority: Optional[str] = None
+
+@app.put("/settings/routing/{category}")
+async def update_routing_category_endpoint(category: str, update: UpdateCategoryRequest) -> dict:
+    settings = get_settings()
+    policy = settings.routingPolicy
+    if category not in policy:
+        raise HTTPException(status_code=404, detail="Category not found")
+        
+    if update.model is not None:
+        policy[category]["model"] = update.model
+    if update.action is not None:
+        policy[category]["action"] = update.action
+    if update.priority is not None:
+        policy[category]["priority"] = update.priority
+        
+    save_settings(settings)
+    return policy[category]
 
 
 @app.post("/apply-suggestion", response_model=ApplyRoutingFixResponse)
@@ -520,7 +584,7 @@ async def remediations_endpoint() -> dict:
     return {
         "total_remediations": len(log),
         "auto_applied": len(log) > 0,
-        "current_policy": get_routing_policy(),
+        "current_policy": get_settings().routingPolicy,
         "remediations": log,
     }
 
@@ -543,26 +607,136 @@ async def save_settings_endpoint(settings: ObsidianSettings) -> ObsidianSettings
     return settings
 
 
-@app.post("/settings/danger/purge-logs", summary="Danger: Purge all audit logs")
+@app.get("/settings/webhook/test", summary="Test the Slack webhook")
+async def test_webhook_endpoint():
+    settings = get_settings()
+    if not settings.webhookUrl:
+        return {"success": False, "error": "No webhook URL configured"}
+    
+    post_slack_alert(settings.webhookUrl, "🔔 *Obsidian Test* — Your Slack webhook is working correctly!")
+    return {"success": True, "message": "Test message sent to Slack"}
+
+@app.put("/settings", response_model=ObsidianSettings, summary="Partially update global settings")
+async def partial_update_settings_endpoint(partial: dict) -> ObsidianSettings:
+    current = get_settings()
+    updated_dict = current.model_dump()
+    
+    # Map snake_case keys from Prompt 1 to our existing camelCase schema
+    mapping = {
+        "auto_remediate": "autoRemediate",
+        "block_on_budget_exhaustion": "blockOnBudget",
+        "log_all_queries": "logAllQueries",
+        "hindsight_enabled": "hindsightEnabled",
+        "recall_similarity_threshold": "recallThreshold",
+        "session_budget_cap": "budgetCap",
+        "low_budget_warning_pct": "warningThreshold",
+        "in_app_cost_alerts": "costAlerts",
+        "slack_alerts_enabled": "slackAlerts",
+        "routing_strategy": "routingStrategy",
+        "default_model": "defaultModel",
+        "fallback_model": "fallbackModel",
+        "max_latency_budget_ms": "latencyBudget",
+        "strict_sensitive_blocking": "strictSensitive",
+        "pii_detection_enabled": "piiDetection",
+        "jailbreak_block_enabled": "jailbreakBlock",
+        "audit_log_retention_days": "auditRetention"
+    }
+    
+    for k, v in partial.items():
+        field_name = mapping.get(k, k)
+        if field_name in updated_dict:
+            updated_dict[field_name] = v
+
+    new_settings = ObsidianSettings(**updated_dict)
+    save_settings(new_settings)
+    return new_settings
+
+
+@app.delete("/admin/audit-logs", summary="Danger: Purge all audit logs", dependencies=[Depends(verify_api_key)])
 async def purge_logs_endpoint() -> dict:
     purge_all_events()
     return {"success": True, "message": "All audit logs have been purged."}
 
 
-@app.post("/settings/danger/clear-memory", summary="Danger: Clear Hindsight memory banks")
+@app.delete("/admin/hindsight-memory", summary="Danger: Clear Hindsight memory banks", dependencies=[Depends(verify_api_key)])
 async def clear_memory_endpoint() -> dict:
     await clear_hindsight_memory()
     return {"success": True, "message": "Hindsight memory banks cleared."}
 
 
-@app.post("/settings/danger/reset-budgets", summary="Danger: Reset all active agent budgets")
+@app.post("/admin/reset-budgets", summary="Danger: Reset all active agent budgets", dependencies=[Depends(verify_api_key)])
 async def reset_all_budgets_endpoint() -> dict:
-    from hindsight_store import get_agent_ids
-    agent_ids = get_agent_ids()
-    count = 0
-    for aid in agent_ids:
-        reset_session(aid)
-        count += 1
-    # also reset default
-    reset_session("default")
-    return {"success": True, "message": f"Reset budgets for {count} agents + default."}
+    count = reset_all_budgets()
+    return {"success": True, "message": f"Reset budgets for {count} agents."}
+
+# ── OpenAI Compatible Gateway ────────────────────────────────────────────────
+@app.post("/v1/chat/completions", summary="OpenAI compatible chat completions gateway", dependencies=[Depends(verify_api_key)])
+async def openai_chat_completions(
+    body: OpenAIChatRequest,
+    x_obsidian_agent_id: str = Header(...)
+):
+    if body.stream:
+        raise HTTPException(status_code=400, detail="Streaming is not supported for this demo.")
+        
+    query = ""
+    if body.messages:
+        query = body.messages[-1].get("content", "")
+        
+    answer, trace_events, summary, flags = run_query(query, agent_id=x_obsidian_agent_id)
+    
+    # Store event in pipeline
+    category = classify_category(query)
+    if "pii_detected" in flags and get_settings().strictSensitive:
+        category = "sensitive_data"
+        
+    if trace_events and not (answer.startswith("[POLICY STOP]") or answer.startswith("[BUDGET STOP]")):
+        audit_event = trace_events[-1]
+    else:
+        action = "unknown"
+        reason = "no_trace"
+        if answer.startswith("[POLICY STOP]"):
+            action = "block"
+            reason = answer.replace("[POLICY STOP] ", "").strip()
+        elif answer.startswith("[BUDGET STOP]"):
+            action = "block"
+            reason = "budget_exceeded"
+            
+        audit_event = {
+            "action":          action,
+            "model":           None,
+            "cost_total":      0.0,
+            "latency_used_ms": 0.0,
+            "decision_mode":   "enforce",
+            "timestamp_ms":    time.time() * 1000,
+            "run_id":          "n/a",
+            "step":            0,
+            "reason":          reason,
+            "query":           query,
+        }
+    audit_event["agent_id"] = x_obsidian_agent_id
+    audit_event["flags"] = flags
+    
+    await store_event(category, audit_event, agent_id=x_obsidian_agent_id)
+    
+    # Return OpenAI shape
+    return {
+        "id": "chatcmpl-demo",
+        "object": "chat.completion",
+        "created": int(time.time()),
+        "model": body.model,
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": answer
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        }
+    }

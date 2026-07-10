@@ -67,14 +67,6 @@ _session_cms: dict[str, object] = {}
 
 # ── Routing Policy ────────────────────────────────────────────────────────────
 _routing_lock = threading.Lock()
-# Default policy: use DEFAULT_MODEL for everything
-_DEFAULT_POLICY: dict[CATEGORIES, str] = {
-    "order_status": DEFAULT_MODEL,
-    "refund": DEFAULT_MODEL,
-    "sensitive_data": DEFAULT_MODEL,
-    "general_faq": DEFAULT_MODEL,
-}
-_routing_policy: dict[CATEGORIES, str] = _DEFAULT_POLICY.copy()
 
 # ── Remediation log — written by apply_routing_fix on every real policy change ──
 # Each entry: { applied_at_ms, category, old_model, new_model, reason, escalation_rate }
@@ -135,15 +127,37 @@ def reset_session(agent_id: str = "default") -> dict:
         _session_cms[agent_id] = cm
     # Also reset routing policy and remediation log
     with _routing_lock:
-        _routing_policy = _DEFAULT_POLICY.copy()
+        settings = get_settings()
+        settings.routingPolicy = {
+            "order_status": {"model": settings.defaultModel, "action": "allow", "priority": "High"},
+            "refund": {"model": settings.defaultModel, "action": "allow", "priority": "High"},
+            "sensitive_data": {"model": settings.defaultModel, "action": "block", "priority": "Critical"},
+            "general_faq": {"model": settings.defaultModel, "action": "allow", "priority": "Low"}
+        }
+        from settings_store import save_settings
+        save_settings(settings)
         _remediation_log.clear()
     return old_summary
 
+def reset_all_budgets() -> int:
+    """Close all sessions and start fresh for all active agents. Returns count of agents reset."""
+    global _active_ctxs, _session_cms
+    count = 0
+    with _session_lock:
+        for agent_id in list(_active_ctxs.keys()):
+            try:
+                if agent_id in _session_cms:
+                    _session_cms[agent_id].__exit__(None, None, None)
+            except Exception:
+                pass
+            ctx, cm = _make_ctx()
+            _active_ctxs[agent_id] = ctx
+            _session_cms[agent_id] = cm
+            count += 1
+    return count
 
-def get_routing_policy() -> dict[CATEGORIES, str]:
-    """Return the current routing policy (thread-safe)."""
-    with _routing_lock:
-        return _routing_policy.copy()
+
+
 
 
 def apply_routing_fix(suggestion: dict) -> tuple[bool, str, RoutingPolicyChange | None]:
@@ -152,26 +166,31 @@ def apply_routing_fix(suggestion: dict) -> tuple[bool, str, RoutingPolicyChange 
     Returns (success: bool, message: str, change: RoutingPolicyChange | None)
     """
     with _routing_lock:
+        settings = get_settings()
+        policy = settings.routingPolicy
+        
         # Extract category from structured suggestion
-        category: CATEGORIES | None = suggestion.get("category")
-        if category not in _DEFAULT_POLICY:
+        category = suggestion.get("category")
+        if category not in policy:
             return False, "No valid category in structured suggestion", None
         
         # Governance guardrail: never downgrade sensitive_data
         if category == "sensitive_data":
             return False, "Governance guardrail: sensitive_data queries may not be automatically downgraded", None
         
-        settings = get_settings()
         cheap_model = settings.fallbackModel or CHEAP_FALLBACK_MODEL
         
-        old_model = _routing_policy[category]
+        old_model = policy[category].get("model", settings.defaultModel)
         # Check if it's already using the cheap model
         if old_model == cheap_model:
             return False, "No change needed: already using cheaper model", None
         
         # Apply the fix — mutates the live routing policy immediately
         import time as _time
-        _routing_policy[category] = cheap_model
+        from settings_store import save_settings
+        policy[category]["model"] = cheap_model
+        settings.routingPolicy = policy
+        save_settings(settings)
         applied_at_ms = _time.time() * 1000
         reason_str = f"Cost escalation detected: {suggestion.get('escalation_rate', 'unknown')} escalation rate"
         change = RoutingPolicyChange(
@@ -233,7 +252,7 @@ def _create_handle_query(model: str):
     return _inner_handle_query
 
 
-def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], dict]:
+def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], dict, list[str]]:
     """
     Run a query through the persistent cascadeflow enforce-mode session.
 
@@ -243,37 +262,44 @@ def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], d
     """
     ctx = _ensure_session(agent_id)
     settings = get_settings()
+    
+    # Dynamically update the active context's budget in case it changed via PUT /settings
+    ctx.budget_max = float(settings.budgetCap)
 
     # Re-register the persistent context in the current async task's ContextVar
     _current_run.set(ctx)
 
+    flags = []
     try:
         # Pre-flight compliance checks
         if settings.piiDetection:
-            if re.search(r'\b\d{3}-\d{2}-\d{4}\b', query) or "ssn" in query.lower() or "credit card" in query.lower():
-                raise HarnessStopError("PII detected in query. Blocked by compliance guardrail.")
+            has_cc = re.search(r'\b(?:\d[ -]*?){13,19}\b', query)
+            has_ssn = re.search(r'\b\d{3}-\d{2}-\d{4}\b', query) or "ssn" in query.lower()
+            has_email = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', query)
+            
+            if has_cc or has_ssn or has_email or "credit card" in query.lower():
+                flags.append("pii_detected")
                 
         if settings.jailbreakBlock:
             q_lower = query.lower()
-            if "ignore all previous instructions" in q_lower or "system prompt" in q_lower or "bypass" in q_lower:
-                raise HarnessStopError("Prompt injection / jailbreak attempt detected. Blocked.")
+            if "ignore previous instructions" in q_lower or "ignore all previous instructions" in q_lower or "disregard your rules" in q_lower or "you are now dan" in q_lower or "system prompt:" in q_lower:
+                flags.append("jailbreak_attempt")
+                raise HarnessStopError("Prompt injection / jailbreak attempt detected. Blocked.", reason="jailbreak_attempt")
                 
         # Classify query
         category = classify_category(query)
-        
-        if settings.strictSensitive and category == "sensitive_data":
-            raise HarnessStopError("Strict sensitive data blocking enabled. Blocked by policy.")
+        if "pii_detected" in flags and settings.strictSensitive:
+            category = "sensitive_data"
             
         with _routing_lock:
+            policy = settings.routingPolicy.get(category, {})
+            if policy.get("action") == "block":
+                raise HarnessStopError("Query blocked by routing policy.", reason="policy_blocked")
+                
             if settings.routingStrategy == "single-model":
                 model = settings.defaultModel
             else:
-                model = _routing_policy[category]
-                # Fallback to settings defaults if they changed
-                if model == DEFAULT_MODEL:
-                    model = settings.defaultModel
-                elif model == CHEAP_FALLBACK_MODEL:
-                    model = settings.fallbackModel
+                model = policy.get("model", settings.defaultModel)
 
         # Create the handle_query function with the correct model and run it
         handle_query = _create_handle_query(model)
@@ -300,4 +326,4 @@ def run_query(query: str, agent_id: str = "default") -> tuple[str, list[dict], d
         trace_events = []
         summary = {}
 
-    return answer, trace_events, summary
+    return answer, trace_events, summary, flags

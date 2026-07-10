@@ -27,6 +27,12 @@ class ObsidianSettings(BaseModel):
     defaultModel: str = "llama-3.3-70b-versatile"
     fallbackModel: str = "llama-3.1-8b-instant"
     latencyBudget: int = 5000
+    routingPolicy: dict[str, dict[str, str]] = {
+        "order_status": {"model": "llama-3.3-70b-versatile", "action": "allow", "priority": "High"},
+        "refund": {"model": "llama-3.3-70b-versatile", "action": "allow", "priority": "High"},
+        "sensitive_data": {"model": "llama-3.3-70b-versatile", "action": "block", "priority": "Critical"},
+        "general_faq": {"model": "llama-3.3-70b-versatile", "action": "allow", "priority": "Low"}
+    }
 
     # Safety & Compliance Policies
     strictSensitive: bool = True
@@ -37,6 +43,7 @@ class ObsidianSettings(BaseModel):
     # Integration & API (read-only mostly, but kept for state)
     webhookUrl: str = ""
     corsOrigins: str = "http://localhost:3000"
+    apiKey: str = "obsidian-demo-key"
 
 
 def get_settings() -> ObsidianSettings:
