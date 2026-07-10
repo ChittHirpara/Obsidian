@@ -161,9 +161,14 @@ export default function SettingsPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <SavedBadge show={saved} />
+<<<<<<< HEAD
             <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ padding: "8px 20px" }}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               {saving ? " Saving..." : " Save Changes"}
+=======
+            <button onClick={showSaved} className="btn btn-primary" style={{ padding: "8px 20px" }}>
+              <Save size={14} /> Save Changes
+>>>>>>> d5852f73c28d9e70cda5502155ed25c154677e8e
             </button>
           </div>
         </div>

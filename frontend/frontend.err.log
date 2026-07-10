@@ -400,3 +400,457 @@ Caused by:
 
 Import trace for requested module:
 ./src/app/dashboard/platform/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/app/dashboard/platform/page.tsx:5:1
+Module not found: Can't resolve 'lucide-react'
+  3 | import React, { useEffect, useState } from "react";
+  4 | import { getAgents, getTrustScore, getRoi, getRemediations, AgentSummary, TrustScoreResponse, ROIResponse, RemediationsResponse } from "@/lib/api";
+> 5 | import { Activity, ShieldCheck, DollarSign, Terminal, ArrowRight, Zap, CheckCircle2, AlertTriangle, Code2 } from "lucide-react";
+    | ^
+  6 | import Ferrofluid from "@/components/Ferrofluid";
+  7 |
+  8 | export default function PlatformDashboard() {
+
+https://nextjs.org/docs/messages/module-not-found
+ ⨯ ./src/app/dashboard/platform/page.tsx:5:1
+Module not found: Can't resolve 'lucide-react'
+  3 | import React, { useEffect, useState } from "react";
+  4 | import { getAgents, getTrustScore, getRoi, getRemediations, AgentSummary, TrustScoreResponse, ROIResponse, RemediationsResponse } from "@/lib/api";
+> 5 | import { Activity, ShieldCheck, DollarSign, Terminal, ArrowRight, Zap, CheckCircle2, AlertTriangle, Code2 } from "lucide-react";
+    | ^
+  6 | import Ferrofluid from "@/components/Ferrofluid";
+  7 |
+  8 | export default function PlatformDashboard() {
+
+https://nextjs.org/docs/messages/module-not-found
+ ⨯ ./src/app/dashboard/platform/page.tsx:5:1
+Module not found: Can't resolve 'lucide-react'
+  3 | import React, { useEffect, useState } from "react";
+  4 | import { getAgents, getTrustScore, getRoi, getRemediations, AgentSummary, TrustScoreResponse, ROIResponse, RemediationsResponse } from "@/lib/api";
+> 5 | import { Activity, ShieldCheck, DollarSign, Terminal, ArrowRight, Zap, CheckCircle2, AlertTriangle, Code2 } from "lucide-react";
+    | ^
+  6 | import Ferrofluid from "@/components/Ferrofluid";
+  7 |
+  8 | export default function PlatformDashboard() {
+
+https://nextjs.org/docs/messages/module-not-found
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\client-development-fallback\0.pack.gz_' -> 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\client-development-fallback\0.pack.gz'
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app-paths-manifest.json',
+  page: '/api/events'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app-paths-manifest.json',
+  page: '/api/insights'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\pages-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\pages-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app-paths-manifest.json',
+  page: '/api/events'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app-paths-manifest.json',
+  page: '/api/insights'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\pages-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\pages-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\fallback-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app\api\[...path]\route.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app\\api\\[...path]\\route.js',
+  page: '/api/events'
+}
+ ⨯ [Error: Cannot find module 'D:\Swarnim\Obsidian\frontend\.next\server\pages\_document.js'
+Require stack:
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\require.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\load-components.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\utils.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\options.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\index.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\next.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app\api\[...path]\route.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app\\api\\[...path]\\route.js',
+  page: '/api/insights'
+}
+ ⨯ [Error: Cannot find module 'D:\Swarnim\Obsidian\frontend\.next\server\pages\_document.js'
+Require stack:
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\require.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\load-components.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\utils.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\options.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\index.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\next.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app\api\[...path]\route.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app\\api\\[...path]\\route.js',
+  page: '/api/events'
+}
+ ⨯ [Error: Cannot find module 'D:\Swarnim\Obsidian\frontend\.next\server\pages\_document.js'
+Require stack:
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\require.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\load-components.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\utils.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\options.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\index.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\next.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\app\api\[...path]\route.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\app\\api\\[...path]\\route.js',
+  page: '/api/insights'
+}
+ ⨯ [Error: Cannot find module 'D:\Swarnim\Obsidian\frontend\.next\server\pages\_document.js'
+Require stack:
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\require.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\load-components.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\utils.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\options.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\swc\index.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\config.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\next.js
+- D:\Swarnim\Obsidian\frontend\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\fallback-build-manifest.json'
+}
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[Error: ENOENT: no such file or directory, stat 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\4.pack.gz'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\cache\\webpack\\server-development\\4.pack.gz'
+}
+ ⨯ unhandledRejection: [Error: ENOENT: no such file or directory, stat 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\4.pack.gz'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\cache\\webpack\\server-development\\4.pack.gz'
+}
+ ⨯ unhandledRejection:  [Error: ENOENT: no such file or directory, stat 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\4.pack.gz'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\cache\\webpack\\server-development\\4.pack.gz'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, stat 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\4.pack.gz'
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/trust-score'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/trust-score'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/settings'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/settings'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/settings'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json',
+  page: '/dashboard/settings'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+ ⨯ ./src/components/DashboardNavbar.tsx
+Error:   [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mD:\Swarnim\Obsidian\frontend\src\components\DashboardNavbar.tsx[0m:11:1]
+ [2m 8[0m | export default function DashboardNavbar() {
+ [2m 9[0m |   const { events } = useDashboardData();
+ [2m10[0m |   const latestEvent = events[0];
+ [2m11[0m |   const [healthStatus = "online"; // can be online/warning/danger
+    : [35;1m                                ^[0m
+ [2m12[0m | 
+ [2m13[0m |   // Get budget state
+ [2m14[0m |   const budget = latestEvent?.audit_event?.budget_state || { remaining: 10, max: 10 };
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/DashboardNavbar.tsx
+./src/app/dashboard/layout.tsx
+ ⨯ ./src/components/DashboardNavbar.tsx
+Error:   [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mD:\Swarnim\Obsidian\frontend\src\components\DashboardNavbar.tsx[0m:15:1]
+ [2m12[0m | 
+ [2m13[0m |   // Get budget state
+ [2m14[0m |   const budget = latestEvent?.audit_event?.budget_state || { remaining: 10, max: 10 };
+ [2m15[0m |   const budgetPct = Math.min(100, (budget.remaining / budget.max) * 100;
+    : [35;1m                                                                       ^[0m
+ [2m16[0m | 
+ [2m17[0m |   // Determine status dot color
+ [2m18[0m |   const statusColor =
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/DashboardNavbar.tsx
+./src/app/dashboard/layout.tsx
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\client-development\0.pack.gz_' -> 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\client-development\0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\0.pack.gz_' -> 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\0.pack.gz_' -> 'D:\Swarnim\Obsidian\frontend\.next\cache\webpack\server-development\0.pack.gz'
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\server\\next-font-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Swarnim\Obsidian\frontend\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Swarnim\\Obsidian\\frontend\\.next\\routes-manifest.json'
+}

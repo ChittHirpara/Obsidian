@@ -2,4 +2,5 @@ fastapi
 uvicorn[standard]
 openai
 cascadeflow>=1.2.0
+requests
 # hindsight-client   # uncomment when you have Docker running `ghcr.io/vectorize-io/hindsight:latest` on port 8888

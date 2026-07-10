@@ -39,7 +39,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchData();
-    pollingRef.current = setInterval(fetchData, 15000);
+    pollingRef.current = setInterval(fetchData, 2000);
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };

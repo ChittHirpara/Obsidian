@@ -1,0 +1,44 @@
+{
+  "autoRemediate": true,
+  "blockOnBudget": true,
+  "logAllQueries": true,
+  "streamEvents": true,
+  "hindsightEnabled": true,
+  "recallThreshold": 0.72,
+  "budgetCap": 1.0,
+  "warningThreshold": 40,
+  "costAlerts": true,
+  "slackAlerts": false,
+  "routingStrategy": "category-based",
+  "defaultModel": "llama-3.3-70b-versatile",
+  "fallbackModel": "llama-3.1-8b-instant",
+  "latencyBudget": 5000,
+  "routingPolicy": {
+    "order_status": {
+      "model": "llama-3.3-70b-versatile",
+      "action": "allow",
+      "priority": "High"
+    },
+    "refund": {
+      "model": "llama-3.3-70b-versatile",
+      "action": "allow",
+      "priority": "High"
+    },
+    "sensitive_data": {
+      "model": "llama-3.3-70b-versatile",
+      "action": "block",
+      "priority": "Critical"
+    },
+    "general_faq": {
+      "model": "llama-3.3-70b-versatile",
+      "action": "allow",
+      "priority": "Low"
+    }
+  },
+  "strictSensitive": true,
+  "piiDetection": true,
+  "jailbreakBlock": true,
+  "auditRetention": "30",
+  "webhookUrl": "https://httpbin.org/post",
+  "corsOrigins": "http://localhost:3000"
+}
