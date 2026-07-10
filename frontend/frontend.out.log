@@ -271,3 +271,435 @@
  GET /api/insights 200 in 2559ms
  GET /dashboard/insights 200 in 1226ms
  ○ Compiling /dashboard/platform ...
+ GET /api/events 500 in 37587ms
+ GET /api/insights 500 in 37582ms
+ GET /dashboard/platform 500 in 38441ms
+ GET /api/events 500 in 21266ms
+ GET /api/insights 500 in 21264ms
+ GET /api/events 500 in 7358ms
+ GET /api/insights 500 in 151ms
+ GET /dashboard/platform 500 in 189ms
+ GET /dashboard/insights 500 in 65ms
+ GET /dashboard/platform 500 in 89ms
+ GET /dashboard/insights 500 in 1902ms
+ GET /dashboard/insights 200 in 990ms
+ GET /dashboard/insights 500 in 356ms
+ ✓ Compiled /_error in 2.4s (2991 modules)
+ GET /dashboard/insights 200 in 1954ms
+ ✓ Compiled in 1947ms (2991 modules)
+ ✓ Compiled in 2.8s (2991 modules)
+ ✓ Compiled in 2.1s (1427 modules)
+ GET /dashboard/insights 200 in 893ms
+ ✓ Compiled in 981ms (1427 modules)
+ GET /dashboard/insights 200 in 36ms
+ ○ Compiling /dashboard/platform ...
+ ✓ Compiled /dashboard/trust-score in 5.3s (1602 modules)
+ ✓ Compiled in 1517ms (1429 modules)
+ GET /dashboard/trust-score 200 in 3717ms
+ GET /dashboard/platform 200 in 7731ms
+ GET /dashboard/platform 200 in 125ms
+ GET /dashboard/platform 200 in 95ms
+ GET /dashboard/platform 200 in 103ms
+ GET /dashboard/platform 200 in 93ms
+ GET /dashboard/insights 200 in 755ms
+ GET /dashboard/platform 200 in 48ms
+ GET /dashboard/trust-score 200 in 53ms
+ GET /dashboard/trust-score 200 in 187ms
+ GET /dashboard/platform 200 in 46ms
+ GET /dashboard/query 200 in 93ms
+ GET /dashboard/platform 200 in 124ms
+ GET /dashboard/trust-score 200 in 76ms
+ GET /dashboard 200 in 179ms
+ ○ Compiling /dashboard/analytics ...
+ ✓ Compiled /dashboard/analytics in 5s (1606 modules)
+ GET /dashboard/analytics 200 in 5443ms
+ GET /dashboard/analytics 200 in 82ms
+ ○ Compiling /dashboard/events ...
+ ✓ Compiled /dashboard/events in 895ms (1606 modules)
+ GET /dashboard/events 200 in 1239ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 1185ms (1611 modules)
+ GET /dashboard/insights 200 in 1430ms
+ GET /dashboard/platform 200 in 91ms
+ GET /dashboard/trust-score 200 in 70ms
+ ○ Compiling /dashboard/session ...
+ ✓ Compiled /dashboard/session in 890ms (1611 modules)
+ GET /dashboard/session 200 in 1112ms
+ ○ Compiling /dashboard/health ...
+ ✓ Compiled /dashboard/health in 5.3s (3033 modules)
+ GET /dashboard/health 200 in 5575ms
+ ○ Compiling /dashboard/settings ...
+ ✓ Compiled /dashboard/settings in 1432ms (2502 modules)
+ GET /dashboard/settings 200 in 1632ms
+ GET /dashboard/trust-score 200 in 76ms
+ GET /dashboard/trust-score 200 in 35ms
+ GET /dashboard/platform 200 in 102ms
+ ✓ Compiled in 7s (2510 modules)
+ GET /dashboard/platform 200 in 276ms
+ GET /dashboard/health 200 in 87ms
+ ✓ Compiled in 4.9s (2524 modules)
+ GET /dashboard/health 200 in 1736ms
+ GET /dashboard/health 200 in 4113ms
+ GET /dashboard/session 200 in 139ms
+ GET /dashboard/trust-score 200 in 103ms
+ GET /dashboard/platform 200 in 111ms
+ GET /dashboard/health 200 in 95ms
+ GET /dashboard/session 200 in 82ms
+ GET /dashboard/health 200 in 78ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 2.7s (1087 modules)
+ GET /dashboard/insights 200 in 3234ms
+ GET /dashboard/insights 200 in 152ms
+ ○ Compiling /dashboard/events ...
+ ✓ Compiled /dashboard/events in 8.3s (1092 modules)
+ ○ Compiling /dashboard/query ...
+ ✓ Compiled /dashboard/query in 2.8s (1097 modules)
+ GET /dashboard/events 200 in 12754ms
+ GET /dashboard/query 200 in 6419ms
+ GET /dashboard/events 200 in 238ms
+ GET /dashboard/insights 200 in 117ms
+ GET /dashboard/trust-score 200 in 109ms
+ GET /dashboard/platform 200 in 107ms
+ GET /dashboard/trust-score 200 in 74ms
+ GET /dashboard/trust-score 200 in 997ms
+ GET /dashboard/platform 200 in 77ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 10s (1604 modules)
+ GET /dashboard 200 in 10720ms
+ ○ Compiling /dashboard/analytics ...
+ ✓ Compiled /dashboard/analytics in 3s (1608 modules)
+ GET /dashboard/analytics 200 in 3437ms
+ GET /dashboard/query 200 in 109ms
+ ○ Compiling /dashboard/events ...
+ ✓ Compiled /dashboard/events in 951ms (1608 modules)
+ GET /dashboard/events 200 in 1215ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4.6s (1608 modules)
+ GET / 200 in 5899ms
+ GET /dashboard 200 in 97ms
+ ✓ Compiled in 2.8s (1442 modules)
+ GET /dashboard 200 in 713ms
+ ✓ Compiled in 817ms (1442 modules)
+ GET /dashboard 200 in 34ms
+ ✓ Compiled in 3.4s (3024 modules)
+ GET /dashboard 200 in 206ms
+ ✓ Compiled in 3.7s (3024 modules)
+ GET /dashboard 200 in 161ms
+ ✓ Compiled in 6s (3024 modules)
+ GET /dashboard 200 in 175ms
+ GET /dashboard 200 in 9893ms
+ ○ Compiling /dashboard/platform ...
+ ✓ Compiled /dashboard/platform in 5.7s (1608 modules)
+ GET /dashboard/platform 200 in 6653ms
+ GET /dashboard/events 200 in 120ms
+ ✓ Compiled in 2.6s (1442 modules)
+ GET /dashboard/events 200 in 607ms
+ ✓ Compiled in 686ms (1442 modules)
+ GET /dashboard/events 200 in 78ms
+ ✓ Compiled in 3.5s (3045 modules)
+ GET /dashboard/events 200 in 253ms
+ GET /dashboard 200 in 104ms
+ ✓ Compiled in 2.7s (1442 modules)
+ GET /dashboard 200 in 109ms
+ ✓ Compiled in 3.8s (3045 modules)
+ GET /dashboard 200 in 290ms
+ GET /dashboard/analytics 200 in 98ms
+ ○ Compiling /dashboard/query ...
+ ✓ Compiled /dashboard/insights in 4.9s (1608 modules)
+ ✓ Compiled in 2ms (1613 modules)
+ ✓ Compiled in 2ms (1613 modules)
+ ✓ Compiled in 1ms (1613 modules)
+ GET /dashboard/query 200 in 10545ms
+ GET /dashboard/events 200 in 9046ms
+ GET /dashboard/platform 200 in 4073ms
+ GET /dashboard/insights 200 in 8023ms
+ GET /dashboard 200 in 2638ms
+ ○ Compiling /dashboard/health ...
+ ✓ Compiled /dashboard/health in 5.2s (1625 modules)
+ GET /dashboard/health 200 in 6062ms
+ ✓ Compiled in 3.2s (1442 modules)
+ GET /dashboard/health 200 in 99ms
+ ✓ Compiled in 3.1s (3049 modules)
+ GET /dashboard/health 200 in 277ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1109ms (1615 modules)
+ GET /dashboard 200 in 1419ms
+ GET /dashboard 200 in 93ms
+ GET /dashboard/analytics 200 in 117ms
+ ○ Compiling /dashboard/query ...
+ ✓ Compiled /dashboard/query in 2.6s (1612 modules)
+ GET /dashboard/query 200 in 2835ms
+ GET /dashboard/query 200 in 86ms
+ ✓ Compiled in 3.3s (3054 modules)
+ GET /dashboard/query 200 in 184ms
+ ✓ Compiled in 1211ms (1442 modules)
+ GET /dashboard/query 200 in 65ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 981ms (1620 modules)
+ GET /dashboard 200 in 1267ms
+ GET /dashboard 200 in 115ms
+ ✓ Compiled in 9.5s (3048 modules)
+ GET /dashboard 200 in 278ms
+ ○ Compiling /dashboard/events ...
+ ✓ Compiled /dashboard/events in 963ms (1611 modules)
+ GET /dashboard/events 200 in 1332ms
+ ○ Compiling /dashboard/trust-score ...
+ ✓ Compiled /dashboard/trust-score in 11.9s (3053 modules)
+ GET /dashboard/trust-score 200 in 6974ms
+ GET /dashboard/trust-score 200 in 104ms
+ GET /dashboard/trust-score 200 in 75ms
+ GET /dashboard/platform 200 in 95ms
+ GET /dashboard/trust-score 200 in 63ms
+ ○ Compiling /dashboard/session ...
+ ✓ Compiled /dashboard/session in 4.5s (1604 modules)
+ GET /dashboard/session 200 in 5179ms
+ GET /dashboard/session 200 in 117ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 2.6s (1604 modules)
+ GET /dashboard/insights 200 in 2996ms
+ GET /dashboard/insights 200 in 109ms
+ GET /dashboard/events 200 in 99ms
+ GET /dashboard/events 200 in 846ms
+ GET /dashboard 200 in 112ms
+ ○ Compiling /dashboard/analytics ...
+ ✓ Compiled /dashboard/query in 8.1s (1608 modules)
+ ✓ Compiled (1613 modules)
+ GET /dashboard/analytics 200 in 9768ms
+ GET /dashboard/query 200 in 4101ms
+ GET /dashboard/trust-score 200 in 2275ms
+ GET /dashboard/analytics 200 in 285ms
+ GET /dashboard/trust-score 200 in 287ms
+ GET /dashboard/trust-score 200 in 128ms
+ GET /dashboard/trust-score 200 in 123ms
+ ✓ Compiled in 3.4s (3055 modules)
+ GET /dashboard/trust-score 200 in 277ms
+ GET /dashboard 200 in 212ms
+ ✓ Compiled in 4.7s (3055 modules)
+ GET /dashboard 200 in 220ms
+ ✓ Compiled in 7.9s (3041 modules)
+ GET /dashboard 200 in 296ms
+ ○ Compiling /dashboard/analytics ...
+ ✓ Compiled /dashboard/analytics in 3.8s (1608 modules)
+ GET /dashboard/analytics 200 in 5769ms
+ GET /dashboard 200 in 93ms
+ GET /dashboard/analytics 200 in 66ms
+ GET /dashboard/events 200 in 81ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 5.4s (1613 modules)
+ GET /dashboard/insights 200 in 5688ms
+ GET /dashboard/insights 200 in 111ms
+ GET /dashboard/insights 200 in 104ms
+ GET /dashboard/insights 200 in 117ms
+ GET /dashboard/insights 200 in 66ms
+ GET /dashboard/platform 200 in 88ms
+ GET /dashboard/trust-score 200 in 78ms
+ ○ Compiling /dashboard/query ...
+ ✓ Compiled /dashboard/query in 977ms (1618 modules)
+ GET /dashboard/query 200 in 1206ms
+ GET /dashboard/session 200 in 118ms
+ ○ Compiling /dashboard/health ...
+ ✓ Compiled /dashboard/health in 5.1s (1630 modules)
+ GET /dashboard/health 200 in 5684ms
+ GET /dashboard/health 200 in 107ms
+ ✓ Compiled in 23.8s (3072 modules)
+ GET /dashboard/trust-score 200 in 358ms
+ GET /dashboard/trust-score 200 in 102ms
+ GET /dashboard/platform 200 in 117ms
+ GET /dashboard/insights 200 in 111ms
+ GET /dashboard/events 200 in 126ms
+ GET /dashboard/query 200 in 121ms
+ GET /dashboard/analytics 200 in 92ms
+ GET /dashboard/analytics 200 in 1346ms
+ ✓ Compiled in 9.4s (3059 modules)
+ GET /dashboard/analytics 200 in 375ms
+ GET /dashboard/trust-score 200 in 103ms
+ ○ Compiling /dashboard/session ...
+ ✓ Compiled /dashboard/session in 985ms (1622 modules)
+ GET /dashboard/session 200 in 1240ms
+ ✓ Compiled in 1950ms (3042 modules)
+ GET /dashboard/session 200 in 523ms
+ ✓ Compiled in 3.9s (1442 modules)
+ GET /dashboard/session 200 in 83ms
+ ✓ Compiled in 1492ms (3042 modules)
+ GET /dashboard/session 200 in 269ms
+ GET /dashboard/session 200 in 705ms
+ ✓ Compiled in 9.7s (3042 modules)
+ GET /dashboard/session 200 in 300ms
+ GET /dashboard/trust-score 200 in 80ms
+ GET /dashboard/platform 200 in 79ms
+ ○ Compiling /dashboard/insights ...
+ ✓ Compiled /dashboard/insights in 2.9s (1605 modules)
+ GET /dashboard/insights 200 in 3329ms
+ GET /dashboard/insights 200 in 125ms
+ GET /dashboard/events 200 in 103ms
+ ○ Compiling /dashboard/query ...
+ ✓ Compiled /dashboard/query in 1132ms (1610 modules)
+ GET /dashboard/query 200 in 1404ms
+ GET /dashboard/query 200 in 138ms
+ GET /dashboard/events 200 in 79ms
+ GET /dashboard/query 200 in 80ms
+ GET /dashboard/analytics 200 in 77ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 6.3s (1618 modules)
+ GET /dashboard 200 in 6639ms
+ GET /dashboard 200 in 108ms
+ GET /dashboard 200 in 2010ms
+ GET /dashboard/query 200 in 641ms
+ GET /dashboard 200 in 79ms
+ GET /dashboard/analytics 200 in 158ms
+ GET /dashboard/query 200 in 99ms
+ GET /dashboard/events 200 in 112ms
+ GET /dashboard/insights 200 in 98ms
+ GET /dashboard/platform 200 in 82ms
+ GET /dashboard/trust-score 200 in 92ms
+ GET /dashboard/session 200 in 59ms
+ ○ Compiling /dashboard/health ...
+ ✓ Compiled /dashboard/health in 3.6s (1630 modules)
+ GET /dashboard/health 200 in 4189ms
+ GET /dashboard/health 200 in 92ms
+ GET /dashboard/health 200 in 45ms
+ GET /dashboard/insights 200 in 76ms
+ GET /dashboard/platform 200 in 52ms
+ ○ Compiling /dashboard/settings ...
+ ✓ Compiled /dashboard/settings in 1124ms (1635 modules)
+ GET /dashboard/settings 200 in 1434ms
+ GET /dashboard/settings 200 in 104ms
+ GET /dashboard/settings 200 in 81ms
+ ✓ Compiled in 5.8s (2524 modules)
+ GET /dashboard/settings 200 in 205ms
+ GET /dashboard/settings 200 in 958ms
+ ✓ Compiled in 8.5s (2510 modules)
+ GET /dashboard/settings 200 in 1480ms
+ ○ Compiling /api/[...path] ...
+ ✓ Compiled /api/[...path] in 6.3s (1101 modules)
+ GET /api/insights 503 in 6760ms
+ GET /api/events 503 in 6767ms
+ GET /api/events 503 in 91ms
+ GET /api/insights 503 in 145ms
+ GET /api/events 503 in 33ms
+ GET /api/insights 503 in 53ms
+ GET /api/events 503 in 43ms
+ GET /api/insights 503 in 72ms
+ GET /api/events 503 in 34ms
+ GET /api/insights 503 in 59ms
+ GET /dashboard/settings 200 in 1822ms
+ GET /api/events 503 in 65ms
+ GET /api/insights 503 in 91ms
+ GET /api/insights 503 in 39ms
+ GET /api/events 503 in 61ms
+ GET /api/events 503 in 41ms
+ GET /api/insights 503 in 58ms
+ GET /api/events 503 in 78ms
+ GET /api/insights 503 in 73ms
+ GET /api/events 503 in 30ms
+ GET /api/insights 503 in 60ms
+ GET /api/events 503 in 45ms
+ GET /api/insights 503 in 74ms
+ GET /api/events 200 in 87ms
+ GET /api/insights 200 in 93ms
+ GET /dashboard/settings 200 in 459ms
+ GET /api/events 200 in 90ms
+ GET /api/insights 200 in 95ms
+ GET /api/events 500 in 986ms
+ GET /api/events 500 in 385ms
+ GET /api/insights 500 in 1014ms
+ GET /api/insights 500 in 375ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 12.6s (2548 modules)
+ GET /api/events 404 in 13416ms
+ GET /api/insights 404 in 13417ms
+ GET /dashboard/settings 200 in 836ms
+ GET /api/events 500 in 904ms
+ GET /api/events 500 in 409ms
+ GET /api/insights 500 in 957ms
+ GET /api/insights 500 in 335ms
+ GET /api/events 200 in 74ms
+ GET /api/insights 200 in 89ms
+ GET /dashboard/settings 404 in 146ms
+ ✓ Compiled in 3.1s (1442 modules)
+ GET /dashboard/settings 200 in 76ms
+ GET /dashboard/settings 200 in 462ms
+ GET /api/events 200 in 83ms
+ GET /api/insights 200 in 88ms
+ ✓ Compiled in 1783ms (1442 modules)
+ GET /dashboard/settings 200 in 240ms
+ GET /dashboard/settings 200 in 443ms
+ GET /api/events 200 in 179ms
+ GET /api/insights 200 in 183ms
+ GET /api/events 200 in 40ms
+ GET /api/insights 200 in 54ms
+ GET /api/events 200 in 62ms
+ GET /api/insights 200 in 69ms
+ GET /dashboard/health 200 in 147ms
+ GET /api/health 200 in 53ms
+ GET /api/health 200 in 58ms
+ GET /dashboard/settings 200 in 123ms
+ GET /api/events 200 in 98ms
+ GET /api/insights 200 in 144ms
+ ○ Compiling /dashboard/trust-score ...
+ ✓ Compiled /dashboard/trust-score in 9.9s (1106 modules)
+ GET /dashboard/trust-score 200 in 10426ms
+ GET /dashboard/trust-score 200 in 124ms
+ GET /dashboard/trust-score 200 in 97ms
+ GET /api/agents 200 in 144ms
+ GET /api/agents 200 in 153ms
+ GET /api/events 200 in 1259ms
+ GET /api/insights 200 in 1341ms
+ GET /api/trust-score?agent_id=test-bot 200 in 869ms
+ GET /api/trust-score?agent_id=default 200 in 69ms
+ GET /api/trust-score?agent_id=sales-bot 200 in 89ms
+ GET /api/trust-score?agent_id=support-bot 200 in 56ms
+ GET /api/trust-score?agent_id=auto-fix-bot 200 in 41ms
+ GET /api/trust-score?agent_id=test-bot 200 in 57ms
+ GET /api/trust-score?agent_id=default 200 in 59ms
+ GET /api/trust-score?agent_id=sales-bot 200 in 59ms
+ GET /api/events 200 in 61ms
+ GET /api/insights 200 in 75ms
+ GET /api/trust-score?agent_id=support-bot 200 in 36ms
+ GET /dashboard/platform 200 in 132ms
+ GET /dashboard/trust-score 500 in 2244ms
+ GET /dashboard/trust-score 500 in 401ms
+ GET /dashboard/settings 500 in 1819ms
+ GET /dashboard/settings 500 in 396ms
+ GET /dashboard/settings 500 in 2996ms
+ GET /dashboard/settings 500 in 1537ms
+ ✓ Compiled in 14.2s (2523 modules)
+ ✓ Compiled in 797ms (1442 modules)
+ ✓ Compiled in 654ms (1442 modules)
+ ✓ Compiled in 677ms (1442 modules)
+ ✓ Compiled in 1189ms (2472 modules)
+ ✓ Compiled in 1334ms (2526 modules)
+ ✓ Compiled in 982ms (1443 modules)
+ ✓ Compiled in 4.7s (2526 modules)
+ ✓ Compiled in 6s (2523 modules)
+ ✓ Compiled in 3.9s (1442 modules)
+ ✓ Compiled in 4.2s (2523 modules)
+ ✓ Compiled in 1320ms (2522 modules)
+ ✓ Compiled in 559ms (1442 modules)
+ ✓ Compiled in 1199ms (1442 modules)
+ ✓ Compiled in 2.4s (2543 modules)
+ ✓ Compiled in 1200ms (1455 modules)
+ ✓ Compiled in 865ms (1457 modules)
+ ✓ Compiled in 708ms (1460 modules)
+ ✓ Compiled in 3.3s (2557 modules)
+ ✓ Compiled in 915ms (1463 modules)
+ ✓ Compiled in 4.4s (2568 modules)
+ ✓ Compiled in 603ms (1470 modules)
+ ✓ Compiled in 4.5s (2564 modules)
+ ✓ Compiled in 1363ms (2566 modules)
+ ✓ Compiled in 6.5s (2501 modules)
+ ✓ Compiled in 3.2s (2501 modules)
+ ✓ Compiled in 10s (2501 modules)
+ ✓ Compiled in 4.7s (2501 modules)
+ ✓ Compiled in 1193ms (2501 modules)
+ ✓ Compiled in 636ms (1468 modules)
+ ✓ Compiled in 1722ms (2501 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 1821ms (1103 modules)
+ GET / 500 in 2157ms
+ GET / 500 in 100ms
+ GET / 500 in 206ms
+ GET / 500 in 81ms
+ GET / 500 in 223ms
+ GET / 500 in 96ms
+[?25h
