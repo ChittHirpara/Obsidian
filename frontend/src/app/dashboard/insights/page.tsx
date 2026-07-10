@@ -1,11 +1,40 @@
 "use client";
 
+import React, { useState } from "react";
 import { useDashboardData } from "@/components/DashboardContext";
 import { motion } from "framer-motion";
 import { Lightbulb, Brain, GitBranch, CheckCircle2 } from "lucide-react";
 
 export default function InsightsPage() {
-  const { insights, isLoading: loading } = useDashboardData();
+  const { insights, isLoading: loading, refreshData } = useDashboardData();
+  const [isApplying, setIsApplying] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [isApplied, setIsApplied] = useState(false);
+
+  const handleApply = async () => {
+    if (!insights?.routing_suggestion) return;
+    setIsApplying(true);
+    try {
+      const res = await fetch("/api/apply-routing-fix", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ suggestion: insights.routing_suggestion })
+      });
+      if (res.ok) {
+        await refreshData();
+        setIsApplied(true);
+        setIsDismissed(true);
+      }
+    } catch (e) {
+      console.error("Failed to apply suggestion:", e);
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  const handleDismiss = () => {
+    setIsDismissed(true);
+  };
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 900, margin: "0 auto" }}>
@@ -60,7 +89,7 @@ export default function InsightsPage() {
             <h3 style={{ margin: "0 0 12px", fontSize: "13.5px", fontWeight: 600, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
               <GitBranch size={16} style={{ color: "var(--color-warning)" }} /> Routing Suggestion
             </h3>
-            {insights?.routing_suggestion ? (
+            {insights?.routing_suggestion && !isDismissed ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <p style={{ margin: 0, fontSize: "13px", color: "var(--color-text-secondary)" }}>
                   Based on recent activity, Hindsight suggests the following routing policy optimization:
@@ -69,10 +98,22 @@ export default function InsightsPage() {
                   {JSON.stringify(insights.routing_suggestion, null, 2)}
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: "12.5px" }}>Apply Suggestion</button>
-                  <button className="btn btn-ghost" style={{ padding: "6px 14px", fontSize: "12.5px" }}>Dismiss</button>
+                  <button onClick={handleApply} disabled={isApplying} className="btn btn-primary" style={{ padding: "6px 14px", fontSize: "12.5px", opacity: isApplying ? 0.7 : 1 }}>
+                    {isApplying ? "Applying..." : "Apply Suggestion"}
+                  </button>
+                  <button onClick={handleDismiss} disabled={isApplying} className="btn btn-ghost" style={{ padding: "6px 14px", fontSize: "12.5px" }}>Dismiss</button>
                 </div>
               </div>
+            ) : isApplied ? (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="empty-state" style={{ padding: "30px 0", background: "rgba(52,211,153,0.05)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 12 }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--color-success-dim)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px", margin: "0 auto 12px" }}>
+                  <CheckCircle2 size={20} style={{ color: "var(--color-success)" }} />
+                </div>
+                <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "var(--color-success)" }}>Routing Policy Optimized!</p>
+                <p style={{ margin: "6px auto 0", fontSize: "12.5px", color: "var(--color-text-secondary)", maxWidth: "300px" }}>
+                  The suggestion was successfully applied and your agent traffic is now being routed to the new model.
+                </p>
+              </motion.div>
             ) : (
               <div className="empty-state" style={{ padding: "30px 0" }}>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--color-success-dim)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "8px" }}>

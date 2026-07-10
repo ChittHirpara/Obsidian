@@ -12,32 +12,20 @@ import requests
 
 logger = logging.getLogger("obsidian.slack")
 
-SLACK_WEBHOOK_URL = (
-    "https://hooks.slack.com/services/"
-    "T0BFVD343RV/B0BG4HASEUT/6Xyp6y6kzr8rZbATPd8yetb0"
-)
 
-
-def post_slack_alert(agent_id: str, reason: str, cost: float, action: str) -> None:
+def post_slack_alert(webhook_url: str, text: str) -> None:
     """
-    Fire-and-forget Slack alert.
+    Fire-and-forget Slack alert using the provided webhook URL.
     Runs in a daemon thread so it never blocks the API response.
-
-    Args:
-        agent_id: e.g. "support-bot"
-        reason:   short human reason, e.g. "90% budget consumed" or "compliance stop"
-        cost:     cost_total of the triggering event
-        action:   cascadeflow action string, e.g. "stop", "switch_model"
     """
-    text = (
-        f"⚠️ *[{agent_id}]* {reason} — "
-        f"cost=${cost:.5f}, action=`{action}`"
-    )
+    if not webhook_url:
+        logger.warning("No slack webhook URL configured.")
+        return
 
     def _send() -> None:
         try:
             resp = requests.post(
-                SLACK_WEBHOOK_URL,
+                webhook_url,
                 json={"text": text},
                 timeout=5,
             )

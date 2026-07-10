@@ -111,6 +111,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Agent Behaviour */}
       <div className="card" style={{ padding: "24px 28px" }}>
