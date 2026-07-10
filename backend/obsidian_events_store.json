@@ -1,5 +1,5 @@
 {
-  "total": 75,
+  "total": 76,
   "events": [
     {
       "timestamp_ms": 1783358302382.2996,
@@ -1852,6 +1852,32 @@
           "remaining": 0.990255
         },
         "query": "what is the main advantages of using the groq",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783665904949.2695,
+      "category": "refund",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "cccb7e0d446a",
+        "mode": "enforce",
+        "step": 5,
+        "timestamp_ms": 1783665904949.2695,
+        "tool_calls_total": 0,
+        "cost_total": 0.0105075,
+        "latency_used_ms": 9859.999999996944,
+        "energy_used": 1708.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9894925
+        },
+        "query": "What are your return policies?",
         "applied": true,
         "decision_mode": "enforce",
         "agent_id": "default"
