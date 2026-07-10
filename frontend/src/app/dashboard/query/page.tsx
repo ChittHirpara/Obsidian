@@ -1,25 +1,24 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { postQuery, type QueryResponse } from "@/lib/api";
 import { formatINR } from "@/lib/currency";
 import { showToast } from "@/components/Toast";
+import { Send, Clock } from "lucide-react";
 
 const EXAMPLE_QUERIES = [
   "Where is my order #12345?",
   "I want a refund for order #98765",
   "What are your return policies?",
   "My credit card was charged twice",
-  "Can I change my delivery address?",
-  "Track my shipment",
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  order_status: "#0D9488",
-  refund: "#6366F1",
-  sensitive_data: "#DC2626",
-  general_faq: "#16A34A",
+  order_status: "#6366F1",
+  refund: "#A78BFA",
+  sensitive_data: "#F87171",
+  general_faq: "#34D399",
 };
 const CATEGORY_LABELS: Record<string, string> = {
   order_status: "Order Status",
@@ -74,11 +73,11 @@ export default function QueryPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "900px", margin: "0 auto" }}>
       {/* Query input card */}
-      <div className="card" style={{ padding: "22px" }}>
+      <div className="card glow-focus" style={{ padding: "24px" }}>
         <div style={{ marginBottom: "16px" }}>
-          <h2 style={{ margin: 0, fontSize: "15px", fontWeight: 600, color: "#F3F4F6" }}>Submit a Query</h2>
-          <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#9CA3AF" }}>
-            Routed through cascadeflow enforce mode → Groq (qwen3-32b). Press Enter or click Send.
+          <h2 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "var(--color-text-primary)" }}>Submit a Query</h2>
+          <p style={{ margin: "4px 0 0", fontSize: "12.5px", color: "var(--color-text-muted)" }}>
+            Routed through cascadeflow enforce mode → Groq. Press Enter or click Send.
           </p>
         </div>
 
@@ -98,11 +97,10 @@ export default function QueryPage() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-          {/* Example chips */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-            <span style={{ fontSize: "11.5px", color: "#9CA3AF", fontWeight: 500, alignSelf: "center" }}>Try:</span>
-            {EXAMPLE_QUERIES.slice(0, 4).map(ex => (
-              <button key={ex} onClick={() => setQuery(ex)} className="chip" style={{ fontSize: "11.5px" }}>
+            <span style={{ fontSize: "11px", color: "var(--color-text-muted)", fontWeight: 500, alignSelf: "center" }}>Try:</span>
+            {EXAMPLE_QUERIES.map(ex => (
+              <button key={ex} onClick={() => setQuery(ex)} className="chip" style={{ fontSize: "11px" }}>
                 {ex}
               </button>
             ))}
@@ -115,29 +113,23 @@ export default function QueryPage() {
             style={{ minWidth: "100px" }}
           >
             {loading ? (
-              <><span style={{ display: "inline-block", animation: "spin 0.8s linear infinite" }}>⟳</span> Sending…</>
+              <><span className="animate-spin" style={{ display: "inline-block", width: 13, height: 13 }}>⟳</span> Sending…</>
             ) : (
-              <>
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-                Send
-              </>
+              <><Send size={13} /> Send</>
             )}
           </button>
         </div>
 
-        {/* Loading indicator */}
         <AnimatePresence>
           {loading && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              style={{ marginTop: "16px", padding: "12px 14px", background: "rgba(20,184,166,0.15)", border: "1px solid rgba(20,184,166,0.3)", borderRadius: "8px", display: "flex", alignItems: "center", gap: "10px" }}
+              style={{ marginTop: "16px", padding: "10px 14px", background: "var(--color-accent-dim)", border: "1px solid rgba(99,102,241,0.2)", borderRadius: "8px", display: "flex", alignItems: "center", gap: "10px" }}
             >
-              <div style={{ width: "16px", height: "16px", borderRadius: "50%", border: "2px solid #0D9488", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
-              <span style={{ fontSize: "13px", color: "#14B8A6", fontWeight: 500 }}>Routing through cascadeflow → Groq…</span>
+              <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: "2px solid var(--color-accent)", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+              <span style={{ fontSize: "12.5px", color: "var(--color-accent-light)", fontWeight: 500 }}>Routing through cascadeflow → Groq…</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -145,9 +137,9 @@ export default function QueryPage() {
 
       {/* History */}
       <AnimatePresence initial={false}>
-        {history.map((item, idx) => {
+        {history.map((item) => {
           const r = item.result;
-          const catColor = CATEGORY_COLORS[r.category] ?? "#9CA3AF";
+          const catColor = CATEGORY_COLORS[r.category] ?? "#5C5D63";
           return (
             <motion.div
               key={item.ts}
@@ -158,72 +150,58 @@ export default function QueryPage() {
               style={{ overflow: "hidden" }}
             >
               {/* Header */}
-              <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.12)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+              <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--color-border)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "11.5px", fontFamily: "monospace", color: "#9CA3AF" }}>
-                    {new Date(item.ts).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: false,
-                      timeZone: "Asia/Kolkata",
-                    })}
+                  <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+                    {new Date(item.ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Asia/Kolkata" })}
                   </span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "12px", fontWeight: 600, color: catColor }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: catColor, display: "inline-block" }} />
+                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: catColor, display: "inline-block" }} />
                     {CATEGORY_LABELS[r.category] ?? r.category}
                   </span>
-                  {r.blocked ? (
-                    <span className="badge badge-stop">Blocked</span>
-                  ) : (
-                    <span className="badge badge-allow">Allowed</span>
-                  )}
+                  {r.blocked ? <span className="badge badge-stop">Blocked</span> : <span className="badge badge-allow">Allowed</span>}
                 </div>
                 <div style={{ display: "flex", gap: "12px" }}>
                   {r.audit_event?.cost_total != null && (
-                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#9CA3AF" }}>
-                      Cost: <strong style={{ color: "#F3F4F6" }}>{formatINR(r.audit_event.cost_total, 5)}</strong>
+                    <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+                      Cost: <strong style={{ color: "var(--color-text-primary)" }}>{formatINR(r.audit_event.cost_total, 5)}</strong>
                     </span>
                   )}
                   {r.audit_event?.latency_used_ms != null && (
-                    <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#9CA3AF" }}>
-                      Latency: <strong style={{ color: "#F3F4F6" }}>{formatLatency(r.audit_event.latency_used_ms)}</strong>
+                    <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+                      <Clock size={11} style={{ display: "inline", verticalAlign: "middle", marginRight: "3px" }} />
+                      {formatLatency(r.audit_event.latency_used_ms)}
                     </span>
                   )}
                 </div>
               </div>
 
               {/* Query */}
-              <div style={{ padding: "12px 20px 8px", background: "rgba(17,24,39,0.4)" }}>
-                <p style={{ margin: 0, fontSize: "11px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Query</p>
-                <p style={{ margin: 0, fontSize: "13.5px", color: "#F3F4F6" }}>{item.query}</p>
+              <div style={{ padding: "12px 20px 8px" }}>
+                <p style={{ margin: 0, fontSize: "10px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Query</p>
+                <p style={{ margin: 0, fontSize: "13px", color: "var(--color-text-primary)" }}>{item.query}</p>
               </div>
 
               {/* Response */}
-              <div style={{ padding: "12px 20px 16px" }}>
-                <p style={{ margin: "0 0 6px", fontSize: "11px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
-                <div className="code-block" style={{ fontSize: "12.5px" }}>{r.response}</div>
+              <div style={{ padding: "8px 20px 16px" }}>
+                <p style={{ margin: "0 0 6px", fontSize: "10px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
+                <div className="code-block" style={{ fontSize: "12px" }}>{r.response}</div>
               </div>
 
               {/* Audit details */}
-              <div style={{ padding: "10px 20px 14px", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              <div style={{ padding: "10px 20px 14px", borderTop: "1px solid var(--color-border-subtle)" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                   {[
                     { k: "Model", v: r.audit_event?.model ?? "—" },
                     { k: "Action", v: r.audit_event?.action ?? "—" },
                     { k: "Mode", v: r.audit_event?.decision_mode ?? "enforce" },
                     { k: "Budget left", v: formatINR(r.audit_event?.budget_state?.remaining ?? 0, 5) },
                   ].map(({ k, v }) => (
-                    <div key={k} style={{ padding: "5px 10px", background: "rgba(17,24,39,0.4)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "6px" }}>
-                      <span style={{ fontSize: "10.5px", color: "#9CA3AF", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{k}: </span>
-                      <span className="font-mono-data" style={{ fontSize: "11.5px", color: "#F3F4F6" }}>{v}</span>
+                    <div key={k} style={{ padding: "4px 10px", background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: "6px" }}>
+                      <span style={{ fontSize: "10px", color: "var(--color-text-muted)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{k}: </span>
+                      <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>{v}</span>
                     </div>
                   ))}
-                  {r.routing_suggestion && (
-                    <div style={{ padding: "5px 10px", background: "rgba(129,140,248,0.15)", border: "1px solid rgba(129,140,248,0.3)", borderRadius: "6px" }}>
-                      <span style={{ fontSize: "11px", color: "#818CF8", fontWeight: 600 }}>💡 Routing suggestion available</span>
-                    </div>
-                  )}
                 </div>
               </div>
             </motion.div>
@@ -234,13 +212,13 @@ export default function QueryPage() {
       {history.length === 0 && (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-state-icon" style={{ background: "rgba(20,184,166,0.15)" }}>
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#14B8A6" strokeWidth={1.5}>
+            <div className="empty-state-icon" style={{ background: "var(--color-accent-dim)" }}>
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--color-accent-light)" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
-            <p style={{ margin: 0, fontWeight: 600, color: "#F3F4F6", fontSize: "14px" }}>No queries yet</p>
-            <p style={{ margin: 0, fontSize: "13px", color: "#9CA3AF" }}>Type a query above and press Send or Enter</p>
+            <p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-primary)", fontSize: "13.5px" }}>No queries yet</p>
+            <p style={{ margin: 0, fontSize: "12.5px", color: "var(--color-text-muted)" }}>Type a query above and press Send or Enter</p>
           </div>
         </div>
       )}

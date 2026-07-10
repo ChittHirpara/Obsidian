@@ -1,5 +1,5 @@
 {
-  "total": 64,
+  "total": 68,
   "events": [
     {
       "timestamp_ms": 1783358302382.2996,
@@ -1585,6 +1585,94 @@
         "applied": true,
         "decision_mode": "enforce",
         "agent_id": "support-bot"
+      }
+    },
+    {
+      "timestamp_ms": 1783627043552.4895,
+      "category": "general_faq",
+      "agent_id": "test",
+      "audit_event": {
+        "action": "allow",
+        "model": "llama-3.3-70b-versatile",
+        "cost_total": 0.0,
+        "latency_used_ms": 0.0,
+        "decision_mode": "simple",
+        "timestamp_ms": 1783627043551.8691,
+        "run_id": "2c7c1ccc",
+        "step": 1,
+        "reason": "direct_groq_call",
+        "query": "hello",
+        "agent_id": "test",
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.0
+        }
+      }
+    },
+    {
+      "timestamp_ms": 1783627057214.2502,
+      "category": "general_faq",
+      "agent_id": "test",
+      "audit_event": {
+        "action": "allow",
+        "model": "llama-3.3-70b-versatile",
+        "cost_total": 4.2e-05,
+        "latency_used_ms": 619.9,
+        "decision_mode": "simple",
+        "timestamp_ms": 1783627056428.4556,
+        "run_id": "1c42ff68",
+        "step": 1,
+        "reason": "direct_groq_call",
+        "query": "hello world",
+        "agent_id": "test",
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.0
+        }
+      }
+    },
+    {
+      "timestamp_ms": 1783627117803.1997,
+      "category": "order_status",
+      "agent_id": "demo",
+      "audit_event": {
+        "action": "allow",
+        "model": "llama-3.3-70b-versatile",
+        "cost_total": 0.000159,
+        "latency_used_ms": 1039.0,
+        "decision_mode": "simple",
+        "timestamp_ms": 1783627116764.193,
+        "run_id": "af0bc6de",
+        "step": 1,
+        "reason": "direct_groq_call",
+        "query": "Where is my order #12345?",
+        "agent_id": "demo",
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.0
+        }
+      }
+    },
+    {
+      "timestamp_ms": 1783627291287.8977,
+      "category": "refund",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "model": "llama-3.3-70b-versatile",
+        "cost_total": 0.000293,
+        "latency_used_ms": 2225.9,
+        "decision_mode": "simple",
+        "timestamp_ms": 1783627288676.6443,
+        "run_id": "1d06c5e4",
+        "step": 1,
+        "reason": "direct_groq_call",
+        "query": "My credit card was charged twice",
+        "agent_id": "default",
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.0
+        }
       }
     }
   ]

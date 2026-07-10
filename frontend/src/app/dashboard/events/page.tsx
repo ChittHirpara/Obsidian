@@ -4,12 +4,13 @@ import { useState, useMemo } from "react";
 import { useDashboardData } from "@/components/DashboardContext";
 import { formatINR } from "@/lib/currency";
 import { motion, AnimatePresence } from "framer-motion";
+import { Search, Download } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  order_status: "#0D9488",
-  refund: "#6366F1",
-  sensitive_data: "#DC2626",
-  general_faq: "#16A34A",
+  order_status: "#6366F1",
+  refund: "#A78BFA",
+  sensitive_data: "#F87171",
+  general_faq: "#34D399",
 };
 const CATEGORY_LABELS: Record<string, string> = {
   order_status: "Order Status",
@@ -20,13 +21,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const formatTime = (ts: number) =>
   new Date(ts).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZone: "Asia/Kolkata",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false, timeZone: "Asia/Kolkata",
   });
-
 const formatLatency = (ms: number) =>
   ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms.toFixed(0)}ms`;
 
@@ -80,29 +77,25 @@ export default function EventsPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Controls */}
-      <div className="card" style={{ padding: "20px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
-          
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", flex: 1, minWidth: "250px" }}>
-            <div style={{ position: "relative", width: "100%", maxWidth: "300px" }}>
-              <svg style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+      <div className="card" style={{ padding: "16px 20px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", flex: 1, minWidth: "250px" }}>
+            <div style={{ position: "relative", width: "100%", maxWidth: "280px" }}>
+              <Search size={15} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)" }} />
               <input
                 type="text"
                 className="input"
                 placeholder="Search events..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ paddingLeft: "36px" }}
+                style={{ paddingLeft: "34px" }}
               />
             </div>
-
             <select
               className="select"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              style={{ width: "auto" }}
+              style={{ width: "auto", minWidth: "160px" }}
             >
               <option value="all">All Actions & Categories</option>
               <option disabled>── Actions ──</option>
@@ -114,24 +107,20 @@ export default function EventsPage() {
               ))}
             </select>
           </div>
-
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="font-mono-data" style={{ fontSize: "12px", color: "#9CA3AF" }}>{filtered.length} results</span>
-            <button onClick={downloadCSV} className="btn btn-ghost" disabled={filtered.length === 0} style={{ padding: "6px 14px", fontSize: "13px" }}>
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Export CSV
+            <span className="font-mono-data" style={{ fontSize: "11.5px", color: "var(--color-text-muted)" }}>{filtered.length} results</span>
+            <button onClick={downloadCSV} className="btn btn-ghost" disabled={filtered.length === 0} style={{ padding: "5px 12px", fontSize: "12px" }}>
+              <Download size={13} /> Export CSV
             </button>
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="card" style={{ overflow: "hidden", position: "relative" }}>
+      <div className="card" style={{ overflow: "hidden" }}>
         {loading && events.length === 0 ? (
           <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>
-            <div style={{ width: 24, height: 24, border: "2px solid #0D9488", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+            <div style={{ width: 22, height: 22, border: "2px solid var(--color-accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
           </div>
         ) : (
           <div style={{ overflowX: "auto" }}>
@@ -150,7 +139,7 @@ export default function EventsPage() {
               <tbody>
                 <AnimatePresence initial={false}>
                   {filtered.map((r, i) => {
-                    const catColor = CATEGORY_COLORS[r.category] ?? "#9CA3AF";
+                    const catColor = CATEGORY_COLORS[r.category] ?? "#5C5D63";
                     return (
                       <motion.tr
                         key={`${r.timestamp_ms}-${i}`}
@@ -158,25 +147,21 @@ export default function EventsPage() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.15 }}
                       >
-                        <td className="font-mono-data" style={{ color: "#9CA3AF", fontSize: "11.5px", whiteSpace: "nowrap" }}>
-                          {new Date(r.timestamp_ms).toLocaleString("en-US", { 
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                            hour12: false,
-                            timeZone: "Asia/Kolkata",
+                        <td className="font-mono-data" style={{ color: "var(--color-text-muted)", fontSize: "11px", whiteSpace: "nowrap" }}>
+                          {new Date(r.timestamp_ms).toLocaleString("en-US", {
+                            month: "short", day: "numeric",
+                            hour: "2-digit", minute: "2-digit", second: "2-digit",
+                            hour12: false, timeZone: "Asia/Kolkata",
                           })}
                         </td>
                         <td>
                           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 500, color: catColor }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: catColor, display: "inline-block", flexShrink: 0 }} />
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: catColor, display: "inline-block", flexShrink: 0 }} />
                             {CATEGORY_LABELS[r.category] ?? r.category}
                           </span>
                         </td>
-                        <td className="font-mono-data" style={{ fontSize: "12px", color: "#D1D5DB" }}>
-                          {r.audit_event.model ?? <span style={{ color: "#9CA3AF" }}>—</span>}
+                        <td className="font-mono-data" style={{ fontSize: "11.5px", color: "var(--color-text-secondary)" }}>
+                          {r.audit_event.model ?? <span style={{ color: "var(--color-text-muted)" }}>—</span>}
                         </td>
                         <td>
                           {r.audit_event.action === "allow" ? (
@@ -187,29 +172,25 @@ export default function EventsPage() {
                             <span className="badge badge-switch">{r.audit_event.action}</span>
                           )}
                         </td>
-                        <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600 }}>
+                        <td className="font-mono-data right" style={{ fontSize: "12px", fontWeight: 600, color: "var(--color-text-primary)" }}>
                           {r.audit_event.cost_total != null ? formatINR(r.audit_event.cost_total, 5) : "—"}
                         </td>
-                        <td className="font-mono-data right" style={{ color: "#9CA3AF", fontSize: "12px" }}>
+                        <td className="font-mono-data right" style={{ color: "var(--color-text-muted)", fontSize: "11.5px" }}>
                           {r.audit_event.latency_used_ms != null ? formatLatency(r.audit_event.latency_used_ms) : "—"}
                         </td>
-                        <td className="font-mono-data right" style={{ fontSize: "12px" }}>
+                        <td className="font-mono-data right" style={{ fontSize: "11.5px", color: "var(--color-text-secondary)" }}>
                           {r.audit_event.budget_state?.remaining != null ? formatINR(r.audit_event.budget_state.remaining, 4) : "—"}
                         </td>
                       </motion.tr>
                     );
                   })}
                 </AnimatePresence>
-                
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={7}>
                       <div className="empty-state" style={{ padding: "60px 20px" }}>
-                         <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" strokeWidth={1.5} style={{ marginBottom: "8px" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                        <p style={{ margin: 0, fontWeight: 600, color: "#F3F4F6", fontSize: "14px" }}>No events found</p>
-                        <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#9CA3AF" }}>Try adjusting your filters or search query.</p>
+                        <p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-primary)", fontSize: "13.5px" }}>No events found</p>
+                        <p style={{ margin: "4px 0 0", fontSize: "12.5px", color: "var(--color-text-muted)" }}>Try adjusting your filters or search query.</p>
                       </div>
                     </td>
                   </tr>

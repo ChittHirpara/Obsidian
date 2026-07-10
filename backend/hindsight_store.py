@@ -264,6 +264,39 @@ def get_agent_ids() -> list[str]:
     with _agent_lock:
         return list(_agent_event_store.keys())
 
+def purge_all_events() -> None:
+    """Clear all events across legacy and agent-isolated stores (Danger Zone action)."""
+    global _total_event_count
+    with _store_lock:
+        _event_store.clear()
+        _total_event_count = 0
+    with _agent_lock:
+        _agent_event_store.clear()
+    _persist_events()
+    logger.info("Purged all events and deleted store file contents.")
+
+async def clear_hindsight_memory() -> None:
+    """Clear Hindsight memory banks for all active agents (Danger Zone action)."""
+    if not USE_HINDSIGHT:
+        logger.info("Hindsight not enabled; skipping memory purge.")
+        return
+    
+    agent_ids = get_agent_ids()
+    # Also include the legacy default bank
+    banks = ["obsidian-audit"] + [_agent_bank_id(aid) for aid in agent_ids]
+    
+    try:
+        client = _get_hindsight()
+        for bank in set(banks):
+            # If the hindsight client supports purging:
+            if hasattr(client, "apurge"):
+                await client.apurge(bank_id=bank)
+                logger.info(f"Purged Hindsight memory bank: {bank}")
+            else:
+                logger.warning(f"Hindsight client does not support 'apurge'. Skipping {bank}.")
+    except Exception as exc:
+        logger.warning(f"Failed to clear hindsight memory: {exc}")
+
 
 # ── Insights (per-agent aware) ────────────────────────────────────────────────
 def _build_local_insights(agent_id: Optional[str] = None) -> tuple[Optional[str], Optional[str], Optional[dict]]:

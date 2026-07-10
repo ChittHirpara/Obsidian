@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { getAgents, getTrustScore, getRoi, getRemediations, getEvents, AgentSummary, TrustScoreResponse, ROIResponse, RemediationsResponse, EventRecord } from "@/lib/api";
+import { getAgents, getTrustScore, getRoi, getRemediations, getEvents, type AgentSummary, type TrustScoreResponse, type ROIResponse, type RemediationsResponse, type EventRecord } from "@/lib/api";
 import { Activity, ShieldCheck, DollarSign, Terminal, ArrowRight, Zap, CheckCircle2, AlertTriangle, Code2, Database, Search } from "lucide-react";
-import Ferrofluid from "@/components/Ferrofluid";
 
 export default function PlatformDashboard() {
   const [agents, setAgents] = useState<AgentSummary[]>([]);
@@ -11,309 +10,228 @@ export default function PlatformDashboard() {
   const [rois, setRois] = useState<Record<string, ROIResponse>>({});
   const [remediations, setRemediations] = useState<RemediationsResponse | null>(null);
   const [liveEvents, setLiveEvents] = useState<EventRecord[]>([]);
-  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
   const [selectedAgentCode, setSelectedAgentCode] = useState<string | null>(null);
   const [selectedMemoryBank, setSelectedMemoryBank] = useState<string | null>(null);
-
   const terminalEndRef = useRef<HTMLDivElement>(null);
 
   const fetchAllData = async () => {
     try {
       const agentsRes = await getAgents();
       setAgents(agentsRes.agents);
-
       const tsMap: Record<string, TrustScoreResponse> = {};
       const roiMap: Record<string, ROIResponse> = {};
-
       for (const agent of agentsRes.agents) {
         tsMap[agent.agent_id] = await getTrustScore(agent.agent_id);
         roiMap[agent.agent_id] = await getRoi(agent.agent_id);
       }
-
       setTrustScores(tsMap);
       setRois(roiMap);
-      
-      const rems = await getRemediations();
-      setRemediations(rems);
-
+      setRemediations(await getRemediations());
       const evts = await getEvents();
-      // Get the latest 30 events for the terminal
       setLiveEvents(evts.events.slice(-30));
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch platform data");
-    } finally {
-      setLoading(false);
-    }
+    } catch (err: any) { setError(err.message || "Failed to fetch platform data"); } finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchAllData();
-    // Auto-refresh every 2 seconds for the "live simulation" feel
-    const interval = setInterval(fetchAllData, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    // Auto-scroll terminal to bottom
-    if (terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [liveEvents]);
+  useEffect(() => { fetchAllData(); const i = setInterval(fetchAllData, 2000); return () => clearInterval(i); }, []);
+  useEffect(() => { terminalEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [liveEvents]);
 
   const getIntegrationCode = (agentId: string) => `import openai
 
-# 1. Point the client to the Obsidian Gateway
 client = openai.Client(
-    base_url="https://obsidian-gateway.company.com/v1", 
+    base_url="https://obsidian-gateway.company.com/v1",
     api_key="obsidian_key"
 )
 
-# 2. Add your agent_id to the headers
 response = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
     messages=[{"role": "user", "content": "I want a refund"}],
-    extra_headers={"x-obsidian-agent-id": "${agentId}"} # <-- All you add!
+    extra_headers={"x-obsidian-agent-id": "${agentId}"}
 )`;
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 text-white overflow-hidden p-8 font-sans">
-      {/* Background Effect */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-        <Ferrofluid 
-          colors={["#4F46E5", "#06B6D4", "#E0F2FE"]}
-          speed={0.3}
-          scale={1.2}
-          flowDirection="down"
-          mouseInteraction={false}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-neutral-900/60 backdrop-blur-xl p-6 rounded-2xl border border-neutral-800 shadow-2xl">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent flex items-center gap-3">
-              <Zap className="w-8 h-8 text-cyan-400" />
-              Obsidian Platform Control
-            </h1>
-            <p className="text-neutral-400 mt-2 text-lg">
-              Enterprise Middleware: Secure and audit multiple agents concurrently with zero infrastructure changes.
-            </p>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "1200px", margin: "0 auto" }}>
+      {/* Header */}
+      <div className="card" style={{ padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
+        <div>
+          <h1 style={{ fontSize: "22px", fontWeight: 800, color: "var(--color-text-primary)", margin: 0, display: "flex", alignItems: "center", gap: 10 }}>
+            <Zap size={22} style={{ color: "var(--color-accent-light)" }} /> Platform Control
+          </h1>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: 6 }}>
+            Enterprise Middleware: Secure and audit multiple agents concurrently.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ padding: "8px 16px", background: "var(--color-surface-elevated)", borderRadius: 10, border: "1px solid var(--color-border-subtle)" }}>
+            <span style={{ display: "block", fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>Active Agents</span>
+            <span className="font-mono-data" style={{ display: "block", fontSize: "20px", fontWeight: 700, color: "var(--color-text-primary)" }}>{agents.length}</span>
           </div>
-          <div className="flex gap-4">
-            <div className="px-4 py-2 bg-neutral-800 rounded-lg border border-neutral-700">
-              <span className="block text-xs text-neutral-400 uppercase tracking-wider">Active Agents</span>
-              <span className="block text-xl font-mono text-white">{agents.length}</span>
-            </div>
-            <div className="px-4 py-2 bg-neutral-800 rounded-lg border border-neutral-700">
-              <span className="block text-xs text-neutral-400 uppercase tracking-wider">Total Remediations</span>
-              <span className="block text-xl font-mono text-emerald-400">{remediations?.total_remediations || 0}</span>
-            </div>
+          <div style={{ padding: "8px 16px", background: "var(--color-surface-elevated)", borderRadius: 10, border: "1px solid var(--color-border-subtle)" }}>
+            <span style={{ display: "block", fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>Remediations</span>
+            <span className="font-mono-data" style={{ display: "block", fontSize: "20px", fontWeight: 700, color: "var(--color-success)" }}>{remediations?.total_remediations || 0}</span>
           </div>
         </div>
+      </div>
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5" />
-            {error}
-          </div>
+      {error && (
+        <div style={{ background: "var(--color-danger-dim)", border: "1px solid rgba(248,113,113,0.2)", color: "var(--color-danger)", padding: "12px 16px", borderRadius: 10, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+          <AlertTriangle size={16} /> {error}
+        </div>
+      )}
+
+      {/* Agent Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "16px" }}>
+        {loading && agents.length === 0 ? (
+          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "48px", color: "var(--color-text-muted)" }}>Loading Platform Data...</div>
+        ) : agents.length === 0 ? (
+          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "48px", color: "var(--color-text-muted)" }}>No agents have processed events yet.</div>
+        ) : (
+          agents.map(agent => {
+            const ts = trustScores[agent.agent_id];
+            const roi = rois[agent.agent_id];
+            const spent = agent.total_spend ?? 0;
+            const maxBudget = 1.00;
+            const pctSpent = (spent / maxBudget) * 100;
+
+            return (
+              <div key={agent.agent_id} className="card card-hover" style={{ overflow: "hidden" }}>
+                {/* Top Bar */}
+                <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--color-border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <h3 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+                    <Activity size={16} style={{ color: "var(--color-accent-light)" }} /> {agent.agent_id}
+                  </h3>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <button onClick={() => setSelectedMemoryBank(agent.agent_id)} className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>
+                      <Database size={12} /> Memory
+                    </button>
+                    <button onClick={() => setSelectedAgentCode(agent.agent_id)} className="chip" style={{ fontSize: "10.5px", padding: "4px 10px", borderColor: "rgba(99,102,241,0.3)", color: "var(--color-accent-light)" }}>
+                      <Code2 size={12} /> Setup
+                    </button>
+                  </div>
+                </div>
+
+                {/* Metrics */}
+                <div style={{ padding: "20px" }}>
+                  {/* Budget */}
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                      <span style={{ fontSize: "11.5px", color: "var(--color-text-muted)" }}>Budget Spent</span>
+                      <span className="font-mono-data" style={{ fontSize: "11.5px", color: "var(--color-text-secondary)" }}>${spent.toFixed(4)} / ${maxBudget.toFixed(2)}</span>
+                    </div>
+                    <div style={{ height: 6, borderRadius: 4, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 4, background: pctSpent > 90 ? "#F87171" : "linear-gradient(90deg, #6366F1, #818CF8)", width: `${Math.min(pctSpent, 100)}%`, transition: "width 1s" }} />
+                    </div>
+                  </div>
+
+                  {/* Trust & ROI */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div style={{ padding: "14px", background: "var(--color-surface-elevated)", borderRadius: 10, border: "1px solid var(--color-border-subtle)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "11.5px", color: "var(--color-text-muted)", marginBottom: 8 }}>
+                        <ShieldCheck size={14} /> Trust Score
+                      </div>
+                      {ts ? (
+                        <div className="font-mono-data" style={{ fontSize: "24px", fontWeight: 700, color: ts.composite_score >= 80 ? "#34D399" : ts.composite_score >= 50 ? "#FBBF24" : "#F87171" }}>
+                          {ts.composite_score.toFixed(1)}<span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>/100</span>
+                        </div>
+                      ) : <div style={{ fontSize: "18px", color: "var(--color-text-muted)" }}>--</div>}
+                    </div>
+                    <div style={{ padding: "14px", background: "var(--color-surface-elevated)", borderRadius: 10, border: "1px solid var(--color-border-subtle)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "11.5px", color: "var(--color-text-muted)", marginBottom: 8 }}>
+                        <DollarSign size={14} /> Savings
+                      </div>
+                      {roi ? (
+                        <div className="font-mono-data" style={{ fontSize: "24px", fontWeight: 700, color: "var(--color-success)" }}>
+                          {roi.savings_percent.toFixed(0)}%
+                        </div>
+                      ) : <div style={{ fontSize: "18px", color: "var(--color-text-muted)" }}>--</div>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
         )}
+      </div>
 
-        {/* Agent Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading && agents.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-neutral-500 animate-pulse">Loading Platform Data...</div>
-          ) : agents.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-neutral-500">No agents have processed events yet. Run some queries!</div>
+      {/* Live Terminal */}
+      <div className="card" style={{ overflow: "hidden" }}>
+        <div style={{ padding: "10px 16px", borderBottom: "1px solid var(--color-border)", display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(248,113,113,0.4)" }} />
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(251,191,36,0.4)" }} />
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(52,211,153,0.4)" }} />
+          </div>
+          <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>live_intercepts.sh (Cascadeflow Monitor)</span>
+        </div>
+        <div style={{ padding: "16px 20px", minHeight: "220px", fontFamily: "'JetBrains Mono', monospace", fontSize: "11.5px", lineHeight: 1.8, background: "#0A0A0B", overflowY: "auto" }}>
+          {liveEvents.length === 0 ? (
+            <div style={{ color: "var(--color-text-muted)" }}>Waiting for incoming traffic...</div>
           ) : (
-            agents.map(agent => {
-              const ts = trustScores[agent.agent_id];
-              const roi = rois[agent.agent_id];
-              const spent = agent.total_spend;
-              const maxBudget = 1.00;
-              const pctSpent = (spent / maxBudget) * 100;
-
+            liveEvents.map((ev, i) => {
+              const ts = new Date(ev.timestamp_ms).toISOString().split("T")[1].slice(0, -1);
+              const isBlocked = ev.audit_event?.action === "stop";
               return (
-                <div key={agent.agent_id} className="group relative bg-neutral-900/80 backdrop-blur-md rounded-2xl border border-neutral-800 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden shadow-xl hover:shadow-cyan-900/20">
-                  {/* Top Bar */}
-                  <div className="p-5 border-b border-neutral-800 flex justify-between items-center bg-neutral-900/50">
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-cyan-400" />
-                      {agent.agent_id}
-                    </h3>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => setSelectedMemoryBank(agent.agent_id)}
-                        className="text-xs bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded-full border border-purple-500/20 transition-colors flex items-center gap-1.5"
-                      >
-                        <Database className="w-3.5 h-3.5" /> Memory
-                      </button>
-                      <button 
-                        onClick={() => setSelectedAgentCode(agent.agent_id)}
-                        className="text-xs bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 px-3 py-1.5 rounded-full border border-cyan-500/20 transition-colors flex items-center gap-1.5"
-                      >
-                        <Code2 className="w-3.5 h-3.5" /> Setup
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Metrics Body */}
-                  <div className="p-5 space-y-6">
-                    {/* Budget Progress */}
-                    <div>
-                      <div className="flex justify-between text-sm mb-1.5">
-                        <span className="text-neutral-400">Budget Spent</span>
-                        <span className="font-mono text-neutral-200">${spent.toFixed(4)} / ${maxBudget.toFixed(2)}</span>
-                      </div>
-                      <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all duration-1000 ${pctSpent > 90 ? 'bg-red-500' : 'bg-gradient-to-r from-cyan-400 to-blue-500'}`}
-                          style={{ width: `${Math.min(pctSpent, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Trust & ROI Cards */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Trust Score */}
-                      <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700/50">
-                        <div className="flex items-center gap-2 text-sm text-neutral-400 mb-2">
-                          <ShieldCheck className="w-4 h-4" /> Trust Score
-                        </div>
-                        {ts ? (
-                          <div className="text-3xl font-mono font-bold" style={{ color: ts.composite_score >= 80 ? '#4ade80' : ts.composite_score >= 50 ? '#facc15' : '#f87171' }}>
-                            {ts.composite_score.toFixed(1)}<span className="text-sm text-neutral-500">/100</span>
-                          </div>
-                        ) : (
-                          <div className="text-xl text-neutral-500">--</div>
-                        )}
-                      </div>
-
-                      {/* ROI */}
-                      <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700/50">
-                        <div className="flex items-center gap-2 text-sm text-neutral-400 mb-2">
-                          <DollarSign className="w-4 h-4" /> Routing Savings
-                        </div>
-                        {roi ? (
-                          <div className="text-3xl font-mono font-bold text-emerald-400">
-                            {roi.savings_percent.toFixed(0)}%
-                          </div>
-                        ) : (
-                          <div className="text-xl text-neutral-500">--</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                <div key={i} style={{ display: "flex", gap: 12 }}>
+                  <span style={{ color: "var(--color-text-muted)" }}>[{ts}]</span>
+                  <span style={{ color: "var(--color-accent-light)", width: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ev.agent_id}</span>
+                  <span style={{ color: isBlocked ? "#F87171" : "#34D399", width: 44 }}>{isBlocked ? "BLCK" : "PASS"}</span>
+                  <span style={{ color: "var(--color-text-muted)", width: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ev.audit_event?.model || "unknown"}</span>
+                  <span style={{ color: "var(--color-warning)", width: 96 }}>cost=${ev.audit_event?.cost_total?.toFixed(5) || "0"}</span>
+                  <span style={{ color: "var(--color-text-muted)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ev.category}</span>
                 </div>
               );
             })
           )}
+          <div ref={terminalEndRef} />
         </div>
-
-        {/* Live Terminal Stream */}
-        <div className="bg-black/90 rounded-2xl border border-neutral-800 overflow-hidden shadow-2xl">
-          <div className="bg-neutral-900 px-4 py-2 flex items-center gap-2 border-b border-neutral-800">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="ml-2 text-xs text-neutral-500 font-mono">live_intercepts.sh (Cascadeflow Monitor)</span>
-          </div>
-          <div className="p-4 h-64 overflow-y-auto font-mono text-sm space-y-1">
-            {liveEvents.length === 0 ? (
-              <div className="text-neutral-600">Waiting for incoming traffic... Run simulate_traffic.py</div>
-            ) : (
-              liveEvents.map((ev, i) => {
-                const ts = new Date(ev.timestamp_ms).toISOString().split('T')[1].slice(0, -1);
-                const isBlocked = ev.audit_event?.action === 'stop';
-                const model = ev.audit_event?.model || 'unknown';
-                const cost = ev.audit_event?.cost_total?.toFixed(5) || '0.00000';
-                
-                return (
-                  <div key={i} className="flex gap-4 group">
-                    <span className="text-neutral-600">[{ts}]</span>
-                    <span className="text-cyan-600 w-32 truncate">{ev.agent_id}</span>
-                    <span className={`${isBlocked ? 'text-red-400' : 'text-emerald-400'} w-12`}>
-                      {isBlocked ? 'BLCK' : 'PASS'}
-                    </span>
-                    <span className="text-neutral-400 w-48 truncate">{model}</span>
-                    <span className="text-yellow-600 w-24">cost=${cost}</span>
-                    <span className="text-neutral-500 truncate flex-1">{ev.category}</span>
-                  </div>
-                );
-              })
-            )}
-            <div ref={terminalEndRef} />
-          </div>
-        </div>
-
-        {/* Global Auto-Remediation Log */}
-        {remediations && remediations.remediations.length > 0 && (
-          <div className="bg-neutral-900/60 backdrop-blur-xl rounded-2xl border border-neutral-800 p-6">
-            <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              Autonomous Routing Adjustments
-            </h2>
-            <div className="space-y-3">
-              {remediations.remediations.map((rem, idx) => (
-                <div key={idx} className="bg-neutral-800/50 border border-neutral-700 p-4 rounded-xl flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 text-sm mb-1">
-                      <span className="text-emerald-400 font-mono text-xs">{new Date(rem.applied_at_ms).toLocaleTimeString()}</span>
-                      <span className="text-neutral-300">Obsidian detected cost escalation in <strong className="text-white">{rem.category}</strong>.</span>
-                    </div>
-                    <div className="text-neutral-400 text-sm flex items-center gap-2">
-                      <span className="line-through decoration-red-500/50">{rem.old_model}</span>
-                      <ArrowRight className="w-3 h-3" />
-                      <span className="text-cyan-400">{rem.new_model}</span>
-                    </div>
-                  </div>
-                  <div className="hidden sm:block text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">
-                    Auto-Fixed
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Developer Integration Modal */}
-      {selectedAgentCode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-neutral-900 border border-cyan-500/30 rounded-2xl shadow-[0_0_50px_-12px_rgba(6,182,212,0.3)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-5 border-b border-neutral-800 flex justify-between items-center bg-neutral-950">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <Terminal className="w-5 h-5 text-cyan-400" />
-                Drop-in Integration
-              </h3>
-              <button onClick={() => setSelectedAgentCode(null)} className="text-neutral-500 hover:text-white transition-colors">
-                ✕
-              </button>
-            </div>
-            <div className="p-6">
-              <p className="text-neutral-300 mb-4 text-sm leading-relaxed">
-                Connect the <strong className="text-white">{selectedAgentCode}</strong> to Obsidian's infrastructure. No SDKs, no architecture changes. Just point your existing OpenAI/OpenSource client to our gateway and pass your Agent ID.
-              </p>
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                <pre className="relative bg-[#0d1117] p-5 rounded-lg border border-neutral-800 overflow-x-auto">
-                  <code className="text-sm font-mono text-neutral-300">
-                    {getIntegrationCode(selectedAgentCode)}
-                  </code>
-                </pre>
+      {/* Remediations */}
+      {remediations && remediations.remediations.length > 0 && (
+        <div className="card" style={{ padding: "24px" }}>
+          <h2 style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+            <CheckCircle2 size={18} style={{ color: "var(--color-success)" }} /> Autonomous Routing Adjustments
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {remediations.remediations.map((rem, idx) => (
+              <div key={idx} style={{ padding: "14px 16px", background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "12px", marginBottom: 4 }}>
+                    <span className="font-mono-data" style={{ fontSize: "11px", color: "var(--color-success)" }}>{new Date(rem.applied_at_ms).toLocaleTimeString()}</span>
+                    <span style={{ color: "var(--color-text-secondary)" }}>Cost escalation in <strong style={{ color: "var(--color-text-primary)" }}>{rem.category}</strong></span>
+                  </div>
+                  <div style={{ fontSize: "12px", color: "var(--color-text-muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ textDecoration: "line-through", opacity: 0.6 }}>{rem.old_model}</span>
+                    <ArrowRight size={12} />
+                    <span style={{ color: "var(--color-accent-light)" }}>{rem.new_model}</span>
+                  </div>
+                </div>
+                <span className="badge badge-allow" style={{ fontSize: "10px" }}>Auto-Fixed</span>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Integration Modal */}
+      {selectedAgentCode && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-fade-in" style={{ width: "100%", maxWidth: 640, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--color-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+                <Terminal size={16} style={{ color: "var(--color-accent-light)" }} /> Drop-in Integration
+              </h3>
+              <button onClick={() => setSelectedAgentCode(null)} style={{ background: "none", border: "none", color: "var(--color-text-muted)", cursor: "pointer", fontSize: 16 }}>✕</button>
             </div>
-            <div className="p-4 bg-neutral-950 border-t border-neutral-800 flex justify-end">
-              <button 
-                onClick={() => setSelectedAgentCode(null)}
-                className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-neutral-200 transition-colors"
-              >
-                Close
-              </button>
+            <div style={{ padding: "20px" }}>
+              <p style={{ fontSize: "12.5px", color: "var(--color-text-secondary)", marginBottom: 12, lineHeight: 1.6 }}>
+                Connect <strong style={{ color: "var(--color-text-primary)" }}>{selectedAgentCode}</strong> to Obsidian. No SDKs, no architecture changes.
+              </p>
+              <div className="code-block" style={{ fontSize: "11.5px", lineHeight: 1.8 }}>{getIntegrationCode(selectedAgentCode)}</div>
+            </div>
+            <div style={{ padding: "12px 20px", borderTop: "1px solid var(--color-border)", display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={() => setSelectedAgentCode(null)} className="btn btn-ghost" style={{ padding: "6px 16px" }}>Close</button>
             </div>
           </div>
         </div>
@@ -321,80 +239,67 @@ response = client.chat.completions.create(
 
       {/* Memory Inspector Modal */}
       {selectedMemoryBank && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-neutral-900 border border-purple-500/30 rounded-2xl shadow-[0_0_50px_-12px_rgba(168,85,247,0.3)] w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-5 border-b border-neutral-800 flex justify-between items-center bg-neutral-950">
-              <h3 className="text-lg font-bold flex items-center gap-2 text-purple-400">
-                <Database className="w-5 h-5" />
-                Hindsight Vector Memory Bank (obsidian-{selectedMemoryBank})
+        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-fade-in" style={{ width: "100%", maxWidth: 900, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--color-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--color-accent-light)", display: "flex", alignItems: "center", gap: 8 }}>
+                <Database size={16} /> Memory Bank: obsidian-{selectedMemoryBank}
               </h3>
-              <button onClick={() => setSelectedMemoryBank(null)} className="text-neutral-500 hover:text-white transition-colors">
-                ✕
-              </button>
+              <button onClick={() => setSelectedMemoryBank(null)} style={{ background: "none", border: "none", color: "var(--color-text-muted)", cursor: "pointer", fontSize: 16 }}>✕</button>
             </div>
-            <div className="p-6 grid grid-cols-2 gap-6">
-              {/* Left Column: Vector Storage */}
+            <div style={{ padding: "20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+              {/* Indexed Events */}
               <div>
-                <h4 className="text-sm font-semibold text-neutral-400 mb-3 flex items-center gap-2">
-                  <Database className="w-4 h-4" /> Indexed Events
+                <h4 style={{ margin: "0 0 10px", fontSize: "12px", fontWeight: 600, color: "var(--color-text-muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Database size={13} /> Indexed Events
                 </h4>
-                <div className="bg-black border border-neutral-800 rounded-lg p-3 h-64 overflow-y-auto text-xs font-mono text-neutral-400 space-y-2">
-                  {liveEvents.filter(e => e.agent_id === selectedMemoryBank).reverse().slice(0,5).map((e, idx) => (
-                    <div key={idx} className="border-b border-neutral-800 pb-2">
-                      <span className="text-purple-400">ID:</span> vec_{e.timestamp_ms}<br/>
-                      <span className="text-cyan-400">Embedding:</span> [0.123, -0.456, 0.789, ...]<br/>
-                      <span className="text-emerald-400">Payload:</span> {JSON.stringify({ category: e.category, model: e.audit_event.model, cost: e.audit_event.cost_total })}
+                <div style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: 8, padding: 12, height: 256, overflowY: "auto", fontSize: "11px", fontFamily: "monospace", color: "var(--color-text-muted)" }}>
+                  {liveEvents.filter(e => e.agent_id === selectedMemoryBank).reverse().slice(0, 5).map((e, idx) => (
+                    <div key={idx} style={{ paddingBottom: 8, marginBottom: 8, borderBottom: "1px solid var(--color-border-subtle)" }}>
+                      <span style={{ color: "var(--color-accent-light)" }}>ID:</span> vec_{e.timestamp_ms}<br />
+                      <span style={{ color: "var(--color-accent-light)" }}>Embedding:</span> [0.123, -0.456, 0.789, ...]<br />
+                      <span style={{ color: "var(--color-success)" }}>Payload:</span> {JSON.stringify({ category: e.category, model: e.audit_event.model, cost: e.audit_event.cost_total })}
                     </div>
                   ))}
-                  {liveEvents.filter(e => e.agent_id === selectedMemoryBank).length === 0 && "No events stored in memory yet."}
+                  {liveEvents.filter(e => e.agent_id === selectedMemoryBank).length === 0 && "No events stored yet."}
                 </div>
               </div>
-              
-              {/* Right Column: Recall Eval */}
+              {/* Recall Eval */}
               <div>
-                <h4 className="text-sm font-semibold text-neutral-400 mb-3 flex items-center gap-2">
-                  <Search className="w-4 h-4" /> Live Recall Evaluation (Trust Score)
+                <h4 style={{ margin: "0 0 10px", fontSize: "12px", fontWeight: 600, color: "var(--color-text-muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Search size={13} /> Live Recall Evaluation
                 </h4>
-                <div className="bg-neutral-800/50 border border-neutral-700 rounded-lg p-4 space-y-4">
+                <div style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: 8, padding: 16 }}>
                   {trustScores[selectedMemoryBank]?.recall_eval ? (
                     <>
-                      <div>
-                        <div className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Vector Query</div>
-                        <div className="text-sm">"{trustScores[selectedMemoryBank].recall_eval.question}"</div>
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4, fontWeight: 600 }}>Vector Query</div>
+                        <div style={{ fontSize: "12.5px", color: "var(--color-text-secondary)" }}>"{trustScores[selectedMemoryBank].recall_eval.question}"</div>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                         <div>
-                          <div className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Ground Truth</div>
-                          <div className="text-sm text-cyan-400">{trustScores[selectedMemoryBank].recall_eval.ground_truth}</div>
+                          <div style={{ fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4, fontWeight: 600 }}>Ground Truth</div>
+                          <div style={{ fontSize: "12.5px", color: "var(--color-accent-light)" }}>{trustScores[selectedMemoryBank].recall_eval.ground_truth}</div>
                         </div>
                         <div>
-                          <div className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Hindsight Output</div>
-                          <div className="text-sm text-emerald-400">{trustScores[selectedMemoryBank].recall_eval.hindsight_answer}</div>
+                          <div style={{ fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4, fontWeight: 600 }}>Hindsight Output</div>
+                          <div style={{ fontSize: "12.5px", color: "var(--color-success)" }}>{trustScores[selectedMemoryBank].recall_eval.hindsight_answer}</div>
                         </div>
                       </div>
-                      <div className="pt-2 border-t border-neutral-700 flex justify-between items-center">
-                        <span className="text-sm text-neutral-400">Evaluation Match:</span>
-                        <span className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold border border-emerald-500/30">
-                          {trustScores[selectedMemoryBank].recall_eval.match ? "SUCCESS (100 pts)" : "FAILED (0 pts)"}
-                        </span>
+                      <div style={{ borderTop: "1px solid var(--color-border-subtle)", paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>Match:</span>
+                        <span className="badge badge-allow">{trustScores[selectedMemoryBank].recall_eval.match ? "SUCCESS (100 pts)" : "FAILED (0 pts)"}</span>
                       </div>
                     </>
                   ) : (
-                    <div className="text-sm text-neutral-500 py-10 text-center">
-                      Not enough data to evaluate recall yet.
-                    </div>
+                    <div style={{ fontSize: "12.5px", color: "var(--color-text-muted)", padding: "40px 0", textAlign: "center" }}>Not enough data to evaluate recall yet.</div>
                   )}
                 </div>
               </div>
             </div>
-            <div className="p-4 bg-neutral-950 border-t border-neutral-800 flex justify-between items-center">
-              <span className="text-xs text-neutral-500 font-mono">Powered by Hindsight & Vectorize</span>
-              <button 
-                onClick={() => setSelectedMemoryBank(null)}
-                className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-neutral-200 transition-colors"
-              >
-                Close
-              </button>
+            <div style={{ padding: "12px 20px", borderTop: "1px solid var(--color-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "10.5px", color: "var(--color-text-muted)" }}>Powered by Hindsight & Vectorize</span>
+              <button onClick={() => setSelectedMemoryBank(null)} className="btn btn-ghost" style={{ padding: "6px 16px" }}>Close</button>
             </div>
           </div>
         </div>

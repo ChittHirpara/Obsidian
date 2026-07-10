@@ -10,7 +10,14 @@ interface DashboardContextType {
   isLoading: boolean;
 }
 
-const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
+const defaultContext: DashboardContextType = {
+  events: [],
+  insights: null,
+  refreshData: async () => {},
+  isLoading: true,
+};
+
+const DashboardContext = createContext<DashboardContextType>(defaultContext);
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const [events, setEvents] = useState<EventRecord[]>([]);
@@ -46,9 +53,5 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useDashboardData() {
-  const context = useContext(DashboardContext);
-  if (context === undefined) {
-    throw new Error("useDashboardData must be used within a DashboardProvider");
-  }
-  return context;
+  return useContext(DashboardContext);
 }
