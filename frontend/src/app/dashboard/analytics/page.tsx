@@ -6,7 +6,7 @@ import { formatINR } from "@/lib/currency";
 import { useDashboardData } from "@/components/DashboardContext";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ReferenceLine,
 } from "recharts";
 import { BarChart3, TrendingUp, Clock, Cpu } from "lucide-react";
 
@@ -95,8 +95,16 @@ export default function AnalyticsPage() {
   const costTrend = useMemo(() => {
     let cum = 0;
     return [...events].reverse().map((e, i) => {
-      cum += e.audit_event.cost_total ?? 0;
-      return { index: i, cost: e.audit_event.cost_total ?? 0, cumulative: cum };
+      if (e.category !== "__demo_marker__") {
+        cum += e.audit_event.cost_total ?? 0;
+      }
+      return { 
+        index: i, 
+        cost: e.audit_event.cost_total ?? 0, 
+        cumulative: cum,
+        isMarker: e.category === "__demo_marker__",
+        markerLabel: e.category === "__demo_marker__" ? e.audit_event.reason : undefined
+      };
     });
   }, [events]);
 
@@ -267,8 +275,11 @@ export default function AnalyticsPage() {
                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(99,102,241,0.06)" />
                 <XAxis dataKey="index" stroke="transparent" tick={{ fontSize: 10, fill: "#4E5170" }} axisLine={false} tickLine={false} minTickGap={30} />
                 <YAxis stroke="transparent" tick={{ fontSize: 10, fill: "#4E5170" }} tickFormatter={v => formatINR(Number(v), 2)} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(value: number) => [formatINR(value, 5), "Cost"]} labelFormatter={(v) => `Query #${v}`} contentStyle={tooltipStyle} itemStyle={{ color: "#F0F0FF" }} />
+                <Tooltip formatter={(value: number) => [formatINR(value, 5), "Cost"]} labelFormatter={(v) => `Event #${v}`} contentStyle={tooltipStyle} itemStyle={{ color: "#F0F0FF" }} />
                 <Area type="monotone" dataKey="cumulative" stroke="#818CF8" strokeWidth={2.5} fill="url(#spendGrad)" dot={false} activeDot={{ r: 5, fill: "#6366F1", stroke: "#07080C", strokeWidth: 3 }} name="Total Spend" isAnimationActive animationDuration={1500} style={{ filter: "drop-shadow(0 0 4px rgba(129,140,248,0.6))" }} />
+                {costTrend.filter(d => d.isMarker).map(d => (
+                  <ReferenceLine key={`marker-${d.index}`} x={d.index} stroke="#FBBF24" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: d.markerLabel, fill: '#FBBF24', fontSize: 10, offset: 10 }} />
+                ))}
               </AreaChart>
             </ResponsiveContainer>
           </div>

@@ -130,6 +130,11 @@ class ApplyRoutingFixRequest(BaseModel):
     suggestion: dict[str, Any]
 
 
+class DemoMarkRequest(BaseModel):
+    label: str
+    agent_id: str = "default"
+
+
 class ApplyRoutingFixResponse(BaseModel):
     success: bool
     message: str
@@ -335,6 +340,27 @@ async def apply_routing_fix_endpoint(body: ApplyRoutingFixRequest) -> ApplyRouti
     return await _internal_apply_suggestion(body.suggestion)
 
 
+@app.post("/demo/mark", summary="Add a visual marker for the demo")
+async def demo_mark_endpoint(body: DemoMarkRequest) -> dict:
+    from hindsight_store import store_event
+    import time
+    audit_event = {
+        "action": "demo_mark",
+        "model": None,
+        "cost_total": 0.0,
+        "latency_used_ms": 0.0,
+        "decision_mode": "demo",
+        "timestamp_ms": time.time() * 1000,
+        "run_id": "demo",
+        "step": 0,
+        "reason": body.label,
+        "query": f"--- DEMO MARKER: {body.label} ---",
+        "is_marker": True,
+    }
+    await store_event("__demo_marker__", audit_event, agent_id=body.agent_id)
+    return {"success": True, "label": body.label}
+
+
 # ── New endpoints (Part A + B) ────────────────────────────────────────────────
 
 @app.get("/agents", response_model=AgentListResponse, summary="List all agent_ids with stats")
@@ -412,10 +438,10 @@ async def roi_endpoint(
     """
     events = get_all_events(agent_id=agent_id)
 
-    # Strip policy-change pseudo-events (cost=0, no real model usage)
+    # Strip policy-change and demo marker pseudo-events
     billable = [
         e for e in events
-        if e.get("category") != "__policy_change__"
+        if e.get("category") not in ("__policy_change__", "__demo_marker__")
         and float(e.get("audit_event", {}).get("cost_total") or 0) > 0
     ]
 

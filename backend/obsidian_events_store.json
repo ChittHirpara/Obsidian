@@ -1,5 +1,5 @@
 {
-  "total": 71,
+  "total": 74,
   "events": [
     {
       "timestamp_ms": 1783358302382.2996,
@@ -1748,6 +1748,84 @@
           "remaining": 0.99262
         },
         "query": "hello what is your work and how can you help me",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783664270760.784,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "cccb7e0d446a",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783664270760.784,
+        "tool_calls_total": 0,
+        "cost_total": 0.0006325,
+        "latency_used_ms": 969.0000000009604,
+        "energy_used": 120.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9993675
+        },
+        "query": "what are your features in this",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783664576485.107,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "cccb7e0d446a",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783664576485.107,
+        "tool_calls_total": 0,
+        "cost_total": 0.00582,
+        "latency_used_ms": 4234.000000000378,
+        "energy_used": 925.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99418
+        },
+        "query": "hello how are you usefull to us",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783664938497.8113,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "cccb7e0d446a",
+        "mode": "enforce",
+        "step": 3,
+        "timestamp_ms": 1783664938497.8113,
+        "tool_calls_total": 0,
+        "cost_total": 0.0061725,
+        "latency_used_ms": 5530.99999999904,
+        "energy_used": 1004.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9938275
+        },
+        "query": "hello what is your name",
         "applied": true,
         "decision_mode": "enforce",
         "agent_id": "default"
