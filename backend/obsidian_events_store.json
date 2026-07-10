@@ -1,5 +1,5 @@
 {
-  "total": 68,
+  "total": 71,
   "events": [
     {
       "timestamp_ms": 1783358302382.2996,
@@ -1673,6 +1673,84 @@
           "max": 1.0,
           "remaining": 0.0
         }
+      }
+    },
+    {
+      "timestamp_ms": 1783660738860.5554,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "a0838efc2b1c",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783660738860.5554,
+        "tool_calls_total": 0,
+        "cost_total": 0.00019,
+        "latency_used_ms": 885.5443000002197,
+        "energy_used": 51.0,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99981
+        },
+        "query": "hello",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783673119304.7334,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "a0838efc2b1c",
+        "mode": "enforce",
+        "step": 2,
+        "timestamp_ms": 1783673119304.7334,
+        "tool_calls_total": 0,
+        "cost_total": 0.00051,
+        "latency_used_ms": 2554.272200000014,
+        "energy_used": 121.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.99949
+        },
+        "query": "hi",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
+      }
+    },
+    {
+      "timestamp_ms": 1783677157906.5396,
+      "category": "general_faq",
+      "agent_id": "default",
+      "audit_event": {
+        "action": "allow",
+        "reason": "enforce",
+        "model": "llama-3.3-70b-versatile",
+        "run_id": "87d15df8f506",
+        "mode": "enforce",
+        "step": 1,
+        "timestamp_ms": 1783677157906.5396,
+        "tool_calls_total": 0,
+        "cost_total": 0.0005225000000000001,
+        "latency_used_ms": 1300.671600001806,
+        "energy_used": 101.5,
+        "budget_state": {
+          "max": 1.0,
+          "remaining": 0.9994775
+        },
+        "query": "okaya",
+        "applied": true,
+        "decision_mode": "enforce",
+        "agent_id": "default"
       }
     }
   ]

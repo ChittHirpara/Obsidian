@@ -1,7 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { Settings, Shield, DollarSign, GitBranch, ShieldAlert, Plug, AlertTriangle, Save, Copy } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Settings, Shield, DollarSign, GitBranch, ShieldAlert, Plug, AlertTriangle, Save, Copy, Loader2 } from "lucide-react";
+import {
+  getSettings,
+  postSettings,
+  purgeLogs,
+  clearMemory,
+  resetBudgets,
+  type ObsidianSettings,
+} from "@/lib/api";
 
 function SectionHeader({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
@@ -63,29 +71,77 @@ function SavedBadge({ show }: { show: boolean }) {
 }
 
 export default function SettingsPage() {
-  const [autoRemediate, setAutoRemediate] = useState(true);
-  const [blockOnBudget, setBlockOnBudget] = useState(true);
-  const [logAllQueries, setLogAllQueries] = useState(true);
-  const [streamEvents, setStreamEvents] = useState(true);
-  const [hindsightEnabled, setHindsightEnabled] = useState(true);
-  const [recallThreshold, setRecallThreshold] = useState(0.72);
-  const [budgetCap, setBudgetCap] = useState(1.00);
-  const [warningThreshold, setWarningThreshold] = useState(40);
-  const [costAlerts, setCostAlerts] = useState(true);
-  const [slackAlerts, setSlackAlerts] = useState(false);
-  const [defaultModel, setDefaultModel] = useState("llama-3.3-70b-versatile");
-  const [fallbackModel, setFallbackModel] = useState("llama-3.1-8b-instant");
-  const [routingStrategy, setRoutingStrategy] = useState("category-based");
-  const [latencyBudget, setLatencyBudget] = useState(5000);
-  const [strictSensitive, setStrictSensitive] = useState(true);
-  const [piiDetection, setPiiDetection] = useState(true);
-  const [jailbreakBlock, setJailbreakBlock] = useState(true);
-  const [auditRetention, setAuditRetention] = useState("30");
-  const [apiKey] = useState("obs_prod_xK92mLpQr7...●●●●");
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [corsOrigins, setCorsOrigins] = useState("http://localhost:3000");
+  const [settings, setSettings] = useState<ObsidianSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const showSaved = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+
+  // Load settings on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getSettings();
+        setSettings(data);
+      } catch (e) {
+        console.error("Failed to load settings:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  const updateSetting = <K extends keyof ObsidianSettings>(key: K, value: ObsidianSettings[K]) => {
+    if (!settings) return;
+    setSettings({ ...settings, [key]: value });
+  };
+
+  const handleSave = async () => {
+    if (!settings) return;
+    setSaving(true);
+    try {
+      await postSettings(settings);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e) {
+      console.error("Failed to save settings:", e);
+      alert("Failed to save settings. Check console for details.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDangerAction = async (action: "purge" | "clear" | "reset") => {
+    const confirmMsg = {
+      purge: "Are you sure you want to purge ALL audit logs? This cannot be undone.",
+      clear: "Are you sure you want to clear ALL Hindsight memory banks? This cannot be undone.",
+      reset: "Are you sure you want to reset ALL agent budgets? This cannot be undone.",
+    }[action];
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      if (action === "purge") await purgeLogs();
+      else if (action === "clear") await clearMemory();
+      else if (action === "reset") await resetBudgets();
+      alert("Success!");
+    } catch (e) {
+      console.error("Failed to perform action:", e);
+      alert("Failed. Check console for details.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
+        <Loader2 className="animate-spin" size={24} style={{ color: "var(--color-accent)" }} />
+      </div>
+    );
+  }
+
+  if (!settings) {
+    return <div>Failed to load settings.</div>;
+  }
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 860 }}>
@@ -100,14 +156,16 @@ export default function SettingsPage() {
               Settings
             </h1>
             <p style={{ marginTop: 8 }}>
-              Configure Obsidian&apos;s agentic AI middleware — policies, routing, budgets & integrations.
+              Configure Obsidian&apos;s agentic AI middleware — policies, routing, budgets &amp; integrations.
             </p>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <SavedBadge show={saved} />
-          <button onClick={showSaved} className="btn btn-primary" style={{ padding: "8px 20px" }}>
-            <Save size={14} /> Save Changes
-          </button>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <SavedBadge show={saved} />
+            <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ padding: "8px 20px" }}>
+              {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              {saving ? " Saving..." : " Save Changes"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -115,22 +173,22 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: "24px 28px" }}>
         <SectionHeader icon={<Shield size={18} />} title="Agent Behaviour" desc="Control how Obsidian intercepts, audits, and remediates agentic AI requests." />
         <SettingRow label="Auto-Remediate Violations" desc="Automatically reroute blocked queries to a safe fallback answer.">
-          <Toggle value={autoRemediate} onChange={setAutoRemediate} />
+          <Toggle value={settings.autoRemediate} onChange={(v) => updateSetting("autoRemediate", v)} />
         </SettingRow>
         <SettingRow label="Block on Budget Exhaustion" desc="Hard-stop all agent requests when the session budget cap is reached.">
-          <Toggle value={blockOnBudget} onChange={setBlockOnBudget} color="var(--color-danger)" />
+          <Toggle value={settings.blockOnBudget} onChange={(v) => updateSetting("blockOnBudget", v)} color="var(--color-danger)" />
         </SettingRow>
         <SettingRow label="Log All Queries" desc="Persist full audit trail of every query, decision, and cost.">
-          <Toggle value={logAllQueries} onChange={setLogAllQueries} />
+          <Toggle value={settings.logAllQueries} onChange={(v) => updateSetting("logAllQueries", v)} />
         </SettingRow>
         <SettingRow label="Real-Time Event Streaming" desc="Stream live audit events to the dashboard at 2-second polling intervals.">
-          <Toggle value={streamEvents} onChange={setStreamEvents} />
+          <Toggle value={settings.streamEvents} onChange={(v) => updateSetting("streamEvents", v)} />
         </SettingRow>
         <SettingRow label="Hindsight Memory (RAG)" desc="Enable vector memory bank to recall past agent decisions.">
-          <Toggle value={hindsightEnabled} onChange={setHindsightEnabled} />
+          <Toggle value={settings.hindsightEnabled} onChange={(v) => updateSetting("hindsightEnabled", v)} />
         </SettingRow>
         <SettingRow label="Recall Similarity Threshold" desc="Minimum cosine similarity for a memory hit (0.0 – 1.0).">
-          <NumberInput value={recallThreshold} onChange={setRecallThreshold} min={0} max={1} step={0.01} />
+          <NumberInput value={settings.recallThreshold} onChange={(v) => updateSetting("recallThreshold", v)} min={0} max={1} step={0.01} />
         </SettingRow>
       </div>
 
@@ -138,16 +196,16 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: "24px 28px" }}>
         <SectionHeader icon={<DollarSign size={18} />} title="Budget & Cost Controls" desc="Set per-session spending caps and configure alert thresholds." />
         <SettingRow label="Session Budget Cap" desc="Hard ceiling on total LLM cost per agent session.">
-          <NumberInput value={budgetCap} onChange={setBudgetCap} min={0.01} max={100} step={0.01} suffix="USD" />
+          <NumberInput value={settings.budgetCap} onChange={(v) => updateSetting("budgetCap", v)} min={0.01} max={100} step={0.01} suffix="USD" />
         </SettingRow>
         <SettingRow label="Low Budget Warning Threshold" desc="Trigger alert when remaining budget drops below this percentage.">
-          <NumberInput value={warningThreshold} onChange={setWarningThreshold} min={5} max={80} step={5} suffix="%" />
+          <NumberInput value={settings.warningThreshold} onChange={(v) => updateSetting("warningThreshold", v)} min={5} max={80} step={5} suffix="%" />
         </SettingRow>
         <SettingRow label="In-App Cost Alerts" desc="Show toast notifications when budget hits warning or exhaustion threshold.">
-          <Toggle value={costAlerts} onChange={setCostAlerts} color="var(--color-warning)" />
+          <Toggle value={settings.costAlerts} onChange={(v) => updateSetting("costAlerts", v)} color="var(--color-warning)" />
         </SettingRow>
         <SettingRow label="Slack Budget Alerts" desc="Send a Slack webhook notification when budget is low or exhausted.">
-          <Toggle value={slackAlerts} onChange={setSlackAlerts} />
+          <Toggle value={settings.slackAlerts} onChange={(v) => updateSetting("slackAlerts", v)} />
         </SettingRow>
       </div>
 
@@ -155,7 +213,7 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: "24px 28px" }}>
         <SectionHeader icon={<GitBranch size={18} />} title="Model & Routing" desc="Configure which LLM models handle each query category." />
         <SettingRow label="Routing Strategy" desc="How Obsidian decides which model to use.">
-          <SelectInput value={routingStrategy} onChange={setRoutingStrategy} options={[
+          <SelectInput value={settings.routingStrategy} onChange={(v) => updateSetting("routingStrategy", v)} options={[
             { label: "Category-Based (default)", value: "category-based" },
             { label: "Cost-Optimized", value: "cost-optimized" },
             { label: "Latency-First", value: "latency-first" },
@@ -163,60 +221,37 @@ export default function SettingsPage() {
           ]} />
         </SettingRow>
         <SettingRow label="Default Model" desc="Primary LLM for general and unclassified queries.">
-          <SelectInput value={defaultModel} onChange={setDefaultModel} options={[
+          <SelectInput value={settings.defaultModel} onChange={(v) => updateSetting("defaultModel", v)} options={[
             { label: "llama-3.3-70b-versatile", value: "llama-3.3-70b-versatile" },
             { label: "llama-3.1-8b-instant", value: "llama-3.1-8b-instant" },
             { label: "qwen-2.5-32b", value: "qwen-2.5-32b" },
           ]} />
         </SettingRow>
         <SettingRow label="Fallback Model" desc="Model when primary is unavailable or over budget.">
-          <SelectInput value={fallbackModel} onChange={setFallbackModel} options={[
+          <SelectInput value={settings.fallbackModel} onChange={(v) => updateSetting("fallbackModel", v)} options={[
             { label: "llama-3.1-8b-instant", value: "llama-3.1-8b-instant" },
             { label: "llama-3.3-70b-versatile", value: "llama-3.3-70b-versatile" },
           ]} />
         </SettingRow>
         <SettingRow label="Max Latency Budget" desc="Abort and fallback if inference exceeds this limit.">
-          <NumberInput value={latencyBudget} onChange={setLatencyBudget} min={500} max={30000} step={500} suffix="ms" />
+          <NumberInput value={settings.latencyBudget} onChange={(v) => updateSetting("latencyBudget", v)} min={500} max={30000} step={500} suffix="ms" />
         </SettingRow>
-        <div style={{ marginTop: 20 }}>
-          <p style={{ fontSize: "10.5px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Active Routing Policy</p>
-          <div style={{ overflowX: "auto", borderRadius: 10, border: "1px solid var(--color-border-subtle)" }}>
-            <table className="data-table" style={{ margin: 0 }}>
-              <thead><tr><th>Category</th><th>Model</th><th>Action</th><th>Priority</th></tr></thead>
-              <tbody>
-                {[
-                  { cat: "order_status", model: "qwen-2.5-32b", action: "allow", priority: "High" },
-                  { cat: "refund", model: "qwen-2.5-32b", action: "allow", priority: "High" },
-                  { cat: "general_faq", model: "llama-3.1-8b-instant", action: "allow", priority: "Low" },
-                  { cat: "sensitive_data", model: "—", action: "block", priority: "Critical" },
-                ].map(r => (
-                  <tr key={r.cat}>
-                    <td><span className={`badge ${r.action === "block" ? "badge-stop" : "badge-switch"}`}>{r.cat}</span></td>
-                    <td className="font-mono-data" style={{ fontSize: 12, color: r.action === "block" ? "var(--color-danger)" : "var(--color-text-secondary)" }}>{r.action === "block" ? "BLOCKED" : r.model}</td>
-                    <td><span className={`badge ${r.action === "block" ? "badge-stop" : "badge-allow"}`}>{r.action}</span></td>
-                    <td style={{ fontSize: 12, color: "var(--color-text-muted)", fontWeight: 600 }}>{r.priority}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
       {/* Safety & Compliance */}
       <div className="card" style={{ padding: "24px 28px" }}>
         <SectionHeader icon={<ShieldAlert size={18} />} title="Safety & Compliance" desc="Configure guardrails for sensitive data, PII, and prompt injection attacks." />
         <SettingRow label="Strict Sensitive Data Blocking" desc="Immediately block any query classified as sensitive_data.">
-          <Toggle value={strictSensitive} onChange={setStrictSensitive} color="var(--color-danger)" />
+          <Toggle value={settings.strictSensitive} onChange={(v) => updateSetting("strictSensitive", v)} color="var(--color-danger)" />
         </SettingRow>
         <SettingRow label="PII Detection & Redaction" desc="Scan all incoming queries for Personally Identifiable Information.">
-          <Toggle value={piiDetection} onChange={setPiiDetection} color="var(--color-danger)" />
+          <Toggle value={settings.piiDetection} onChange={(v) => updateSetting("piiDetection", v)} color="var(--color-danger)" />
         </SettingRow>
         <SettingRow label="Jailbreak & Prompt Injection Block" desc="Block queries that attempt to override system prompts.">
-          <Toggle value={jailbreakBlock} onChange={setJailbreakBlock} color="var(--color-danger)" />
+          <Toggle value={settings.jailbreakBlock} onChange={(v) => updateSetting("jailbreakBlock", v)} color="var(--color-danger)" />
         </SettingRow>
         <SettingRow label="Audit Log Retention" desc="How long raw audit events are kept before automatic purge.">
-          <SelectInput value={auditRetention} onChange={setAuditRetention} options={[
+          <SelectInput value={settings.auditRetention} onChange={(v) => updateSetting("auditRetention", v)} options={[
             { label: "7 days", value: "7" },
             { label: "30 days", value: "30" },
             { label: "90 days", value: "90" },
@@ -233,32 +268,20 @@ export default function SettingsPage() {
           <p style={{ margin: "0 0 6px", fontSize: "13px", fontWeight: 600, color: "var(--color-text-primary)" }}>Obsidian Gateway API Key</p>
           <p style={{ margin: "0 0 10px", fontSize: "11.5px", color: "var(--color-text-muted)" }}>Pass this as <code style={{ background: "var(--color-surface-elevated)", padding: "1px 6px", borderRadius: 4, fontSize: 11, color: "var(--color-accent-light)" }}>x-obsidian-api-key</code> header.</p>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <input readOnly value={apiKey} style={{ flex: 1, padding: "7px 12px", borderRadius: 8, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", color: "var(--color-text-secondary)", fontSize: 12.5, fontFamily: "'JetBrains Mono', monospace", outline: "none" }} />
-            <button onClick={() => navigator.clipboard.writeText(apiKey)} className="btn btn-ghost" style={{ padding: "7px 14px", fontSize: "11.5px" }}><Copy size={12} /> Copy</button>
+            <input readOnly value="obs_prod_xK92mLpQr7...●●●●" style={{ flex: 1, padding: "7px 12px", borderRadius: 8, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", color: "var(--color-text-secondary)", fontSize: 12.5, fontFamily: "'JetBrains Mono', monospace", outline: "none" }} />
+            <button onClick={() => navigator.clipboard.writeText("obs_prod_xK92mLpQr7...●●●●")} className="btn btn-ghost" style={{ padding: "7px 14px", fontSize: "11.5px" }}><Copy size={12} /> Copy</button>
           </div>
         </div>
-        <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--color-border-subtle)" }}>
-          <p style={{ margin: "0 0 6px", fontSize: "13px", fontWeight: 600, color: "var(--color-text-primary)" }}>1-Line Integration (Python)</p>
-          <div className="code-block" style={{ fontSize: "11.5px", lineHeight: 1.8 }}>
-            <span style={{ color: "#5C5D63" }}># Before: direct OpenAI call</span>{"\n"}
-            <span style={{ color: "#9B9CA3" }}>client</span> <span style={{ color: "#F5F5F7" }}>=</span> <span style={{ color: "#34D399" }}>openai.Client</span><span style={{ color: "#F5F5F7" }}>(base_url=</span><span style={{ color: "#F87171" }}>"https://api.openai.com"</span><span style={{ color: "#F5F5F7" }}>)</span>{"\n\n"}
-            <span style={{ color: "#5C5D63" }}># After: route through Obsidian (1 change)</span>{"\n"}
-            <span style={{ color: "#9B9CA3" }}>client</span> <span style={{ color: "#F5F5F7" }}>=</span> <span style={{ color: "#34D399" }}>openai.Client</span><span style={{ color: "#F5F5F7" }}>(</span>{"\n"}
-            {"    "}<span style={{ color: "#818CF8" }}>base_url</span><span style={{ color: "#F5F5F7" }}>=</span><span style={{ color: "#F87171" }}>"https://obsidian-gateway.company.com/v1"</span><span style={{ color: "#F5F5F7" }}>,</span>{"\n"}
-            {"    "}<span style={{ color: "#818CF8" }}>extra_headers</span><span style={{ color: "#F5F5F7" }}>={`{`}</span><span style={{ color: "#F87171" }}>"x-obsidian-agent-id"</span><span style={{ color: "#F5F5F7" }}>: </span><span style={{ color: "#F87171" }}>"your-agent-id"</span><span style={{ color: "#F5F5F7" }}>{`}`}</span>{"\n"}
-            <span style={{ color: "#F5F5F7" }}>)</span>
-          </div>
-        </div>
+
         <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--color-border-subtle)" }}>
           <p style={{ margin: "0 0 6px", fontSize: "13px", fontWeight: 600, color: "var(--color-text-primary)" }}>Webhook URL</p>
           <div style={{ display: "flex", gap: 8 }}>
-            <input value={webhookUrl} onChange={(e) => setWebhookUrl(e.target.value)} placeholder="https://hooks.slack.com/services/..." className="input" style={{ flex: 1 }} />
-            <button className="btn btn-ghost" style={{ padding: "7px 14px", fontSize: "12px" }}>Test</button>
+            <input value={settings.webhookUrl} onChange={(e) => updateSetting("webhookUrl", e.target.value)} placeholder="https://hooks.slack.com/services/..." className="input" style={{ flex: 1 }} />
           </div>
         </div>
         <div>
           <p style={{ margin: "0 0 6px", fontSize: "13px", fontWeight: 600, color: "var(--color-text-primary)" }}>Allowed CORS Origins</p>
-          <input value={corsOrigins} onChange={(e) => setCorsOrigins(e.target.value)} className="input" style={{ width: "100%" }} />
+          <input value={settings.corsOrigins} onChange={(e) => updateSetting("corsOrigins", e.target.value)} className="input" style={{ width: "100%" }} />
         </div>
       </div>
 
@@ -266,9 +289,9 @@ export default function SettingsPage() {
       <div style={{ background: "var(--color-danger-dim)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: 14, padding: "24px 28px" }}>
         <SectionHeader icon={<AlertTriangle size={18} />} title="Danger Zone" desc="Irreversible actions. These cannot be undone." />
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          {["Purge All Audit Logs", "Clear Hindsight Memory Banks", "Reset All Agent Budgets"].map(label => (
-            <button key={label} className="btn btn-danger" style={{ padding: "8px 16px", fontSize: "12.5px" }}>{label}</button>
-          ))}
+          <button onClick={() => handleDangerAction("purge")} className="btn btn-danger" style={{ padding: "8px 16px", fontSize: "12.5px" }}>Purge All Audit Logs</button>
+          <button onClick={() => handleDangerAction("clear")} className="btn btn-danger" style={{ padding: "8px 16px", fontSize: "12.5px" }}>Clear Hindsight Memory Banks</button>
+          <button onClick={() => handleDangerAction("reset")} className="btn btn-danger" style={{ padding: "8px 16px", fontSize: "12.5px" }}>Reset All Agent Budgets</button>
         </div>
       </div>
     </div>

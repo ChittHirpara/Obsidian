@@ -181,3 +181,61 @@ export const getRemediations = (): Promise<RemediationsResponse> =>
 
 export const resetAgent = (agentId: string): Promise<SessionResetResponse> =>
   apiFetch<SessionResetResponse>(`/agents/${encodeURIComponent(agentId)}/reset`, { method: "DELETE" });
+
+// ── Settings ───────────────────────────────────────────────────────────────
+
+export interface ObsidianSettings {
+  // Agent Behaviour
+  autoRemediate: boolean;
+  blockOnBudget: boolean;
+  logAllQueries: boolean;
+  streamEvents: boolean;
+  hindsightEnabled: boolean;
+  recallThreshold: number;
+
+  // Budget & Cost Controls
+  budgetCap: number;
+  warningThreshold: number;
+  costAlerts: boolean;
+  slackAlerts: boolean;
+
+  // Model & Routing
+  routingStrategy: string;
+  defaultModel: string;
+  fallbackModel: string;
+  latencyBudget: number;
+
+  // Safety & Compliance Policies
+  strictSensitive: boolean;
+  piiDetection: boolean;
+  jailbreakBlock: boolean;
+  auditRetention: string;
+
+  // Integration & API
+  webhookUrl: string;
+  corsOrigins: string;
+}
+
+export interface DangerActionResponse {
+  success: boolean;
+  message: string;
+}
+
+export const getSettings = (): Promise<ObsidianSettings> =>
+  apiFetch<ObsidianSettings>("/settings");
+
+export const postSettings = (settings: ObsidianSettings): Promise<ObsidianSettings> =>
+  apiFetch<ObsidianSettings>("/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(settings),
+  });
+
+export const purgeLogs = (): Promise<DangerActionResponse> =>
+  apiFetch<DangerActionResponse>("/settings/danger/purge-logs", { method: "POST" });
+
+export const clearMemory = (): Promise<DangerActionResponse> =>
+  apiFetch<DangerActionResponse>("/settings/danger/clear-memory", { method: "POST" });
+
+export const resetBudgets = (): Promise<DangerActionResponse> =>
+  apiFetch<DangerActionResponse>("/settings/danger/reset-budgets", { method: "POST" });
