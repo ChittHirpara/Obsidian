@@ -90,14 +90,18 @@ export default function SettingsPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 860 }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: "22px", fontWeight: 800, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 10 }}>
-            <Settings size={22} /> Settings
-          </h1>
-          <p style={{ margin: "6px 0 0", fontSize: "13px", color: "var(--color-text-muted)" }}>
-            Configure Obsidian&apos;s agentic AI middleware — policies, routing, budgets & integrations.
-          </p>
+      <div className="section-header" style={{ marginBottom: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h1 style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Settings size={18} style={{ color: "var(--color-accent-light)" }} />
+              </div>
+              Settings
+            </h1>
+            <p style={{ marginTop: 8 }}>
+              Configure Obsidian&apos;s agentic AI middleware — policies, routing, budgets & integrations.
+            </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <SavedBadge show={saved} />

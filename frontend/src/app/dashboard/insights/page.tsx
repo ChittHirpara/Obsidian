@@ -8,16 +8,18 @@ export default function InsightsPage() {
   const { insights, isLoading: loading } = useDashboardData();
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "900px", margin: "0 auto" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 900, margin: "0 auto" }}>
       {/* Header */}
-      <div className="card" style={{ padding: "24px", background: "linear-gradient(135deg, rgba(99,102,241,0.08) 0%, var(--color-surface) 100%)", border: "1px solid rgba(99,102,241,0.15)" }}>
-        <h2 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "var(--color-accent-light)", display: "flex", alignItems: "center", gap: "8px" }}>
-          <Lightbulb size={20} /> Hindsight AI Insights
-        </h2>
-        <p style={{ margin: 0, fontSize: "13px", color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
-          Obsidian continuously runs <strong style={{ color: "var(--color-accent-light)" }}>Hindsight</strong> in the background. It analyzes your recent audit events to identify cost inefficiencies and suggests optimized routing policies.
-        </p>
+      <div className="section-header">
+        <h1 style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Lightbulb size={18} style={{ color: "#FBBF24" }} />
+          </div>
+          Insights
+        </h1>
+        <p>Hindsight continuously analyzes your audit events to surface cost inefficiencies and optimal routing suggestions.</p>
       </div>
+
 
       {loading && !insights ? (
         <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>

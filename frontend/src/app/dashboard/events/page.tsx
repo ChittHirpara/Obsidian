@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useDashboardData } from "@/components/DashboardContext";
 import { formatINR } from "@/lib/currency";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Download } from "lucide-react";
+import { Search, Download, ScrollText } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
   order_status: "#6366F1",
@@ -75,7 +75,18 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Header */}
+      <div className="section-header">
+        <h1 style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <ScrollText size={18} style={{ color: "#34D399" }} />
+          </div>
+          Audit Trail
+        </h1>
+        <p>Complete log of every AI governance decision — filter, search, and export.</p>
+      </div>
+
       {/* Controls */}
       <div className="card" style={{ padding: "16px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -108,7 +119,7 @@ export default function EventsPage() {
             </select>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="font-mono-data" style={{ fontSize: "11.5px", color: "var(--color-text-muted)" }}>{filtered.length} results</span>
+            <span style={{ fontSize: 11.5, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text-muted)", background: "var(--color-surface-elevated)", border: "1px solid var(--color-border-subtle)", borderRadius: 999, padding: "2px 10px" }}>{filtered.length} results</span>
             <button onClick={downloadCSV} className="btn btn-ghost" disabled={filtered.length === 0} style={{ padding: "5px 12px", fontSize: "12px" }}>
               <Download size={13} /> Export CSV
             </button>

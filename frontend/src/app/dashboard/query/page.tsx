@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { postQuery, type QueryResponse } from "@/lib/api";
 import { formatINR } from "@/lib/currency";
 import { showToast } from "@/components/Toast";
-import { Send, Clock } from "lucide-react";
+import { Send, Clock, Search } from "lucide-react";
 
 const EXAMPLE_QUERIES = [
   "Where is my order #12345?",
@@ -71,9 +71,20 @@ export default function QueryPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "900px", margin: "0 auto" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 900, margin: "0 auto" }}>
+      {/* Header */}
+      <div className="section-header">
+        <h1 style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Search size={18} style={{ color: "var(--color-accent-light)" }} />
+          </div>
+          Live Query
+        </h1>
+        <p>Submit queries through Obsidian governance — routed via CascadeFlow enforce mode to Groq.</p>
+      </div>
+
       {/* Query input card */}
-      <div className="card glow-focus" style={{ padding: "24px" }}>
+      <div className="card glow-focus" style={{ padding: 24 }}>
         <div style={{ marginBottom: "16px" }}>
           <h2 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "var(--color-text-primary)" }}>Submit a Query</h2>
           <p style={{ margin: "4px 0 0", fontSize: "12.5px", color: "var(--color-text-muted)" }}>

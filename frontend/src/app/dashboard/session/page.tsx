@@ -55,24 +55,32 @@ export default function SessionPage() {
   const blockedQueries = events.filter(e => e.audit_event.action === "stop").length;
 
   return (
+  return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "800px", margin: "0 auto" }}>
-      <div className="card" style={{ padding: "24px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: "150px", height: "150px", background: "radial-gradient(circle at top right, rgba(99,102,241,0.06), transparent)", pointerEvents: "none" }} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+      {/* Header */}
+      <div className="section-header" style={{ marginBottom: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
           <div>
-            <h2 style={{ margin: "0 0 4px", fontSize: "17px", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
-              <Activity size={18} style={{ color: "var(--color-accent-light)" }} /> Current Session
-            </h2>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <h1 style={{ margin: 0, fontSize: "22px", fontWeight: 800, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Activity size={18} style={{ color: "var(--color-accent-light)" }} />
+              </div>
+              Current Session
+            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
               <span className="status-dot online" />
-              <span style={{ fontSize: "12.5px", color: "var(--color-text-muted)" }}>Active for <span className="font-mono-data">{uptime}</span></span>
+              <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Active for <span className="font-mono-data" style={{ color: "var(--color-text-secondary)" }}>{uptime}</span></span>
             </div>
           </div>
-          <button onClick={handleReset} disabled={resetting} className="btn btn-danger" style={{ padding: "7px 16px" }}>
-            {resetting ? <span className="animate-spin" style={{ display: "inline-block", width: 13, height: 13 }}>↻</span> : <RotateCcw size={14} />}
+          <button onClick={handleReset} disabled={resetting} className="btn btn-danger" style={{ padding: "8px 16px" }}>
+            {resetting ? <span className="animate-spin" style={{ display: "inline-block", width: 14, height: 14 }}>⟳</span> : <RotateCcw size={14} />}
             Reset Session
           </button>
         </div>
+      </div>
+
+      <div className="card" style={{ padding: "24px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, width: "150px", height: "150px", background: "radial-gradient(circle at top right, rgba(99,102,241,0.06), transparent)", pointerEvents: "none" }} />
 
         {/* Budget Gauge */}
         <div style={{ background: "var(--color-surface-elevated)", borderRadius: "12px", padding: "24px", border: "1px solid var(--color-border-subtle)" }}>
