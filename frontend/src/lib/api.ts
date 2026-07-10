@@ -1,4 +1,4 @@
-const API_URL = "/api";
+const API_URL = "https://obsidian-37k1.onrender.com";
 
 export interface BudgetState {
   max: number;
