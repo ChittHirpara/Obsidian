@@ -1,4 +1,4 @@
-const API_URL = "https://obsidian-37k1.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://obsidian-37k1.onrender.com";
 
 export interface BudgetState {
   max: number;
