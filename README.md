@@ -1,4 +1,3 @@
-
 # Obsidian AI Governance & Audit Platform
 
 A modern, full-stack AI governance platform that provides audit trails, cost control, compliance monitoring, and trust scoring for LLM applications. Built with FastAPI (backend) and Next.js 15 (frontend), Obsidian ensures your AI systems are transparent, cost-effective, and compliant with your governance policies.
